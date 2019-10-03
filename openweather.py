@@ -2,7 +2,7 @@ import sys
 # import requests
 import urllib.request
 import json
-
+api_key ="170dae04cac7827d30fd3679c496ffb4"
 command_arg = sys.argv
 
 if command_arg[1] =="-help":
