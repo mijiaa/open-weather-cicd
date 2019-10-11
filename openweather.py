@@ -9,7 +9,7 @@ API = "170dae04cac7827d30fd3679c496ffb4"
 command_arg = sys.argv
 
 # process data commands
-data_command_lst = ["-time", "-temp", "pressure", "-cloud", "-humidity", "-wind", "sunset", "-sunrise", "-help"]
+data_command_lst = ["-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise", "-help"]
 loc_command_lst = ['-city', '-z', '-gc', 'cid']
 
 
@@ -92,19 +92,20 @@ def check_command_args(command_arg):
                     geo = True
                     geo_res = data
             elif command == '-time':
-                if geo:
+                if time:
                     print("Multiple chosen data are specified.")
                     check_valid = False
                     return
                 else:
                     time = True
-            elif command == 'temp':
+            elif command == '-temp':
                 if temp:
                     print("Multiple chosen data are specified.")
                     check_valid = False
                     return
                 else:
                     temp = True
+                    temp_data = True
                     if data == 'fahrenheit':
                         temp_data = False
                     elif data == 'celsius':
@@ -202,7 +203,7 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
 
         response = urllib.request.urlopen(complete_url)
         json_result = json.loads(response.read())
-        print(json_result)
+        # print(json_result)
 
         if first_arg_lst[1]:
             print("-api must be always be the first command to enter in. -help can only be called with the commands -api "
@@ -217,41 +218,43 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
                   "settled at the location and -sunrise : the time the sun rises at that location.")
         else:
             [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
+            data_check_lst
             if time:
-                time_string = get_date_and_time_string(json_result.dt)
-                print(time_string)
-            elif temp:
-                temp_min = json_result.main.temp_min
-                temp_max = json_result.main.temp_max
+                time_string = get_date_and_time_string(json_result['dt'])
+                print("Time of weather shown is " + time_string +'.')
+            if temp:
+                temp_min = json_result['main']['temp_min']
+                temp_max = json_result['main']['temp_max']
 
                 if temp_data:
-                    celsius_min = temp_min - 273.15
-                    celsius_max = temp_max - 273.15
+                    celsius_min = str(temp_min - 273.15)
+
+                    celsius_max = str(temp_max - 273.15)
                     print("The temperature ranges from " + celsius_min + " to " + celsius_max + " celsius. ")
                 else:
                     fahrenheit_min = (temp_min / 273.15) * 9 / 5 + 32
                     fahrenheit_max = (temp_max / 273.15) * 9 / 5 + 32
-                    print("The temperature ranges from " + fahrenheit_min + " to " + fahrenheit_max + " fahrenheit. ")
-            elif pressure:
-                pressure_result = json_result.main.pressure
-                print("The pressure is " + pressure_result + " hPa. ")
-            elif cloud:
-                description =  json_result.weather.description
-                cloudiness = json_result.clouds.all
-                print("It likely to be " + description + "with a cloudiness of " + cloudiness + "%. ")
-            elif humidity:
-                description =  json_result.weather.description
-                humidity_percent = json_result.clouds.all
-                print("It likely to be " + description + "with a humidity of " + humidity_percent + "%. ")
-            elif wind:
-                wind_speed = json_result.wind.speed
-                wind_angle = json_result.wind.deg
-                print("A wind speed of " + wind_speed + "m/s from " + wind_angle + " degrees. ")
-            elif sunset:
-                time_string = get_time_string(json_result.sys.sunset)
+                    print("The temperature ranges from " + str(fahrenheit_min) + " to " + str(fahrenheit_max) + " fahrenheit. ")
+            if pressure:
+                pressure_result = json_result['main']['pressure']
+                print("The pressure is " + str(pressure_result) + " hPa. ")
+            if cloud:
+                description =  json_result['weather']['description']
+                cloudiness = json_result['clouds']['all']
+                print("It likely to be " + str(description) + "with a cloudiness of " + str(cloudiness) + "%. ")
+            if humidity:
+                description =  json_result['weather']['description']
+                humidity_percent = json_result['clouds']['all']
+                print("It likely to be " + str(description) + "with a humidity of " + str(humidity_percent) + "%. ")
+            if wind:
+                wind_speed = json_result['wind']['speed']
+                wind_angle = json_result['wind']['deg']
+                print("A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees. ")
+            if sunset:
+                time_string = get_time_string(json_result['sys']['sunset'])
                 print("The sun sets at " + time_string)
-            elif sunrise:
-                time_string = get_time_string(json_result.sys.sunset)
+            if sunrise:
+                time_string = get_time_string(json_result['sys']['sunset'])
                 print("The sun sets at " + time_string)
     except HTTPError:
         print("Wrong inputs given to the commands.")
@@ -262,13 +265,13 @@ def get_date_and_time_string(seconds):
 
     time_string = "On "
 
-    time_string += result.tm_year + "-"
-    time_string += result.tm_mon + "-"
-    time_string += result.tm_mday + " "
+    time_string += str(result.tm_year) + "-"
+    time_string += str(result.tm_mon) + "-"
+    time_string += str(result.tm_mday) + " "
 
-    time_string += result.tm_hour + ":"
-    time_string += result.tm_min + ":"
-    time_string += result.tm_sec + ". "
+    time_string += str(result.tm_hour) + ":"
+    time_string += str(result.tm_min) + ":"
+    time_string += str(result.tm_sec) + ". "
 
     return time_string
 
@@ -277,9 +280,9 @@ def get_time_string(seconds):
 
     time_string = ""
 
-    time_string += result.tm_hour + ":"
-    time_string += result.tm_min + ":"
-    time_string += result.tm_sec + ". "
+    time_string += str(result.tm_hour) + ":"
+    time_string += str(result.tm_min) + ":"
+    time_string += str(result.tm_sec) + ". "
 
     return time_string
 
