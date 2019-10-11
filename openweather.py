@@ -93,7 +93,7 @@ def check_command_args(command_arg):
                     humidity = False
                     duplicate_data=True
                 else:
-                    humid = True
+                    humidity = True
             elif command == '-wind':
                 if wind:
                     wind = False
