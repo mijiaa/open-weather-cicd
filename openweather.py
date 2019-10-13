@@ -4,186 +4,184 @@ import json
 import time
 from urllib.error import HTTPError
 
-API = "170dae04cac7827d30fd3679c496ffb4"
+# To get the arguments the user entered in
 command_arg = sys.argv
 
 # python openweather.py -api=170dae04cac7827d30fd3679c496ffb4
 
-# process data commands
-data_command_lst = ["-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise", "-help"]
-loc_command_lst = ['-city', '-cid', '-gc', '-z']
-
 
 def check_command_args(command_arg):
-    # initialize global variables for each command
-    api, api_data, help, help_check = False, None, False, False # first argument check
-    city, c_id, zip, geo = False, False, False, False # location check
-    time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise = False, False, True, False, False, False, False, False, False # data check
-    city_res, id_res, zip_res, geo_res = None, None, None, None # data results
-    check_inputs, check_loc = False, False
+    # Listing out all the possible command-line commands
+    command_list = ["-api", "-help", "-city", "-cid", "-gc", "-z", "-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise"]
 
-    if len(command_arg) <= 1:
-        print("Enter in some commands to get data from a location or get help. ")
+    # Initialize variables for each command
+    # api_data is to hold the API key user enter.
+    # help_check is to check whether -help was called with the other commands that display information
+    api, api_data, help, help_check = False, None, False, False
+    city, c_id, zip, geo = False, False, False, False
+    # temp_data is to check whether its is celsius or fahrenheit. temp_data is True if it is celsius anf vice versa.
+    time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise = False, False, True, False, False, False, False, False, False
+    # To hold the data when user inputs in for the location commands
+    city_res, id_res, zip_res, geo_res = None, None, None, None
+    # check_data_inputs checks for whether the user entered any data commands
+    # check_loc check whether there is a repeat of location commands
+    check_data_inputs, check_loc = False, False
+
+    # Check whether user hasn't entered in any arguments other than the file name
+    if len(command_arg) < 1:
+        print("Enter in some commands to get data from a location or use the -help command.")
         return
 
-    # check if first argument is right
-    if "=" in command_arg[1]:
-        command_split = command_arg[1].split('=')
-        command = command_split[0]
-        data = command_split[1]
-        if command == '-api':
-            api = True
-            api_data = data
-    elif command_arg[1] == "-help":
-        help = True
-    else:
-        print("The -api command along with the API key must be the first argument or the -help command")
-        return
+    for i in range(1, len(command_arg)):
+        # Check whether the user entered in an input along with a command
+        if "=" in command_arg[i]:
+            command_split = command_arg[i].split('=')
+            command = command_split[0]
+            data = command_split[1]
 
-    if api:
-        for i in range(2, len(command_arg)):
-            if "=" in command_arg[i]:
-                command_split = command_arg[i].split('=')
-                command = command_split[0]
-                data = command_split[1]
-
-                if command not in ['-city', '-z', '-gc', '-cid', '-temp']:
-                    print("\nOnly the commands -api, -city, -cid, -gc, -z and -temp allows inputs.")
-                    return
-            else:
-                command = command_arg[i]
-                data = ""
-
-            check_inputs = True
-
-            if command not in data_command_lst and command not in loc_command_lst:
-                print("\nCommands aren't spelled correctly or entered in the correct format")
+            # Check whether the command is one of this commands
+            if command not in ['-api', '-city', '-z', '-gc', '-cid', '-temp']:
+                print("\nOnly the commands -api, -city, -cid, -gc, -z and -temp allows inputs.")
                 return
-            elif command == "-api":
-                if api:
-                    print("\nMultiple chosen data are specified.")
-                    return
-            elif command == '-city':
-                if check_loc:
-                    print("\nMultiple chosen locations are specified.")
-                    return
-                else:
-                    city = True
-                    city_res = data
-                    check_loc = True
-            elif command == '-cid':
-                if check_loc:
-                    print("\nMultiple chosen locations are specified.")
-                    return
-                else:
-                    c_id = True
-                    id_res = data
-                    check_loc = True
-            elif command == '-z':
-                if check_loc:
-                    print("\nMultiple chosen locations are specified.")
-                    return
-                else:
-                    zip = True
-                    zip_res = data
-                    check_loc = True
-            elif command == '-gc':
-                if check_loc:
-                    print("\nMultiple chosen locations are specified.")
-                    return
-                else:
-                    geo = True
-                    geo_res = data
-                    check_loc = True
-            elif command == '-time':
-                if time:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    time = True
-                    help_check = True
-            elif command == '-temp':
-                if temp:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    temp = True
-                    help_check = True
-                    if data == 'fahrenheit':
-                        temp_data = False
-                    elif data == 'celsius':
-                        temp_data = True
-                    elif data == "":
-                        temp_data = True
-                    else:
-                        print("\nWrong unit of temperature. Either in fahrenheit or celsius.")
-                        return
-            elif command == '-pressure':
-                if pressure:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    pressure = True
-                    help_check = True
-            elif command == '-cloud':
-                if cloud:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    cloud = True
-                    help_check = True
-            elif command == '-humidity':
-                if humidity:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    humidity = True
-                    help_check = True
-            elif command == '-wind':
-                if wind:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    wind = True
-                    help_check = True
-            elif command == '-sunset':
-                if sunset:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    sunset = True
-                    help_check = True
-            elif command == '-sunrise':
-                if sunrise:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    sunrise = True
-                    help_check = True
-            elif command == '-help':
-                if help:
-                    print("\nMultiple chosen data are specified.")
-                    return
-                else:
-                    help = True
+        else:
+            # Command that doesn't need a input
+            command = command_arg[i]
+            data = None
 
-        if help_check and help:
-            print("\n-help command can't be called with the other information commands")
+        # Check if the command exist in the list of commands
+        if command not in command_list:
+            print("\nCommands aren't spelled correctly.")
             return
+        elif command == "-api":
+            # Check if -api was called before
+            if api:
+                print("\nMultiple chosen API keys given are specified.")
+                return
+            else:
+                api = True
+                api_data = data
+        elif command == '-city':
+            # Check whether a location command was called before
+            if check_loc:
+                print("\nMultiple chosen locations are specified.")
+                return
+            else:
+                city = True
+                city_res = data
+                check_loc = True
+        elif command == '-cid':
+            if check_loc:
+                print("\nMultiple chosen locations are specified.")
+                return
+            else:
+                c_id = True
+                id_res = data
+                check_loc = True
+        elif command == '-z':
+            if check_loc:
+                print("\nMultiple chosen locations are specified.")
+                return
+            else:
+                zip = True
+                zip_res = data
+                check_loc = True
+        elif command == '-gc':
+            if check_loc:
+                print("\nMultiple chosen locations are specified.")
+                return
+            else:
+                geo = True
+                geo_res = data
+                check_loc = True
+        elif command == '-time':
+            # Check whether the time command was called before
+            if time:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                time = True
+                # To check whether the user mentioned any data they want to display
+                check_data_inputs = True
+        elif command == '-temp':
+            if temp:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                temp = True
+                check_data_inputs = True
+                # Check if user wanted fahrenheit
+                if data == 'fahrenheit':
+                    temp_data = False
+                # Check if user wanted celsius
+                elif data == 'celsius':
+                    temp_data = True
+                elif data is None:
+                    temp_data = True
+                # User mispelled the unit or gave the wrong unit
+                else:
+                    print("\nWrong unit of temperature. Either in fahrenheit or celsius.")
+                    return
+        elif command == '-pressure':
+            if pressure:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                pressure = True
+                check_data_inputs = True
+        elif command == '-cloud':
+            if cloud:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                cloud = True
+        elif command == '-humidity':
+            if humidity:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                humidity = True
+                check_data_inputs = True
+        elif command == '-wind':
+            if wind:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                wind = True
+                check_data_inputs = True
+        elif command == '-sunset':
+            if sunset:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                sunset = True
+                check_data_inputs = True
+        elif command == '-sunrise':
+            if sunrise:
+                print("\nMultiple chosen data are specified.")
+                return
+            else:
+                sunrise = True
+                check_data_inputs = True
+        elif command == '-help':
+            # Check if the first argument is -help
+            if len(command_arg) == 2:
+                help = True
+            else:
+                # -help can't be called with other commands
+                print("\n-help command can only be called alone. ")
+                return
 
-        if check_inputs:
-            first_arg_lst = [api_data, help]
-            location_check_lst = [city, c_id, zip, geo]
-            data_check_lst = [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise]
-            loc_result_lst = [city_res, id_res, zip_res, geo_res]
+    # Check whether the user entered any data to display
+    if check_data_inputs:
+        first_arg_lst = [api_data, help]
+        location_check_lst = [city, c_id, zip, geo]
+        data_check_lst = [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise]
+        loc_result_lst = [city_res, id_res, zip_res, geo_res]
 
-            displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_result_lst)
+        # To display the data commands
+        displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_result_lst)
     else:
-        print("The -api command must be the first argument. ")
-        return
-
-    if not check_inputs:
-        print("Enter in some command to get data from a location or get help. ")
+        print("Enter in a location command and some data commands or call the -help command.")
         return
 
 
@@ -234,6 +232,7 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
                 print("\nWhen entering the latitude and longitude coordinates for this command, separate them with a ','")
                 return
         else:
+            # If the user never mentioned any location commands
             print("\nPlease enter a location command")
             return
 
