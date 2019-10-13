@@ -13,7 +13,7 @@ def check_command_args(command_arg):
     # Listing out all the possible command-line commands
     command_list = ["-api", "-help", "-city", "-cid", "-gc", "-z", "-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise"]
 
-    # Initialize variables for each command
+    # Initialize variables for each command, check for each command
     api, help = False, False
     city, cid, zip, geo = False, False, False, False
     time, temp, pressure, cloud, humidity, wind, sunset, sunrise = False, False, False, False, False, False, False, False
