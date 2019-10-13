@@ -3,7 +3,6 @@ import urllib.request
 import json
 import time
 from urllib.error import HTTPError
-
 # To get the arguments the user entered in
 command_arg = sys.argv
 
@@ -15,14 +14,16 @@ def check_command_args(command_arg):
     command_list = ["-api", "-help", "-city", "-cid", "-gc", "-z", "-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise"]
 
     # Initialize variables for each command
-    # api_data is to hold the API key user enter.
-    # help_check is to check whether -help was called with the other commands that display information
-    api, api_data, help, help_check = False, None, False, False
-    city, c_id, zip, geo = False, False, False, False
+    api, help = False, False
+    city, cid, zip, geo = False, False, False, False
+    time, temp, pressure, cloud, humidity, wind, sunset, sunrise = False, False, False, False, False, False, False, False
+
+    # To hold the user input
+    # api_data is to holds the API key user entered in
+    # loc_data is to hold the locations data
     # temp_data is to check whether its is celsius or fahrenheit. temp_data is True if it is celsius anf vice versa.
-    time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise = False, False, True, False, False, False, False, False, False
-    # To hold the data when user inputs in for the location commands
-    city_res, id_res, zip_res, geo_res = None, None, None, None
+    api_data, loc_data, temp_data = None, None, True
+
     # check_data_inputs checks for whether the user entered any data commands
     # check_loc check whether there is a repeat of location commands
     check_data_inputs, check_loc = False, False
@@ -48,6 +49,10 @@ def check_command_args(command_arg):
             command = command_arg[i]
             data = None
 
+            if command in ['-api', '-city', '-z', '-gc', '-cid']:
+                print("\nPlease enter an input using a '=' after the command.\nEg. -city=London")
+                return
+
         # Check if the command exist in the list of commands
         if command not in command_list:
             print("\nCommands aren't spelled correctly.")
@@ -67,15 +72,15 @@ def check_command_args(command_arg):
                 return
             else:
                 city = True
-                city_res = data
+                loc_data = data
                 check_loc = True
         elif command == '-cid':
             if check_loc:
                 print("\nMultiple chosen locations are specified.")
                 return
             else:
-                c_id = True
-                id_res = data
+                cid = True
+                loc_data = data
                 check_loc = True
         elif command == '-z':
             if check_loc:
@@ -83,7 +88,7 @@ def check_command_args(command_arg):
                 return
             else:
                 zip = True
-                zip_res = data
+                loc_data = data
                 check_loc = True
         elif command == '-gc':
             if check_loc:
@@ -91,7 +96,7 @@ def check_command_args(command_arg):
                 return
             else:
                 geo = True
-                geo_res = data
+                loc_data = data
                 check_loc = True
         elif command == '-time':
             # Check whether the time command was called before
@@ -117,7 +122,7 @@ def check_command_args(command_arg):
                     temp_data = True
                 elif data is None:
                     temp_data = True
-                # User mispelled the unit or gave the wrong unit
+                # User misspelled the unit or gave the wrong unit
                 else:
                     print("\nWrong unit of temperature. Either in fahrenheit or celsius.")
                     return
@@ -173,31 +178,30 @@ def check_command_args(command_arg):
 
     # Check whether the user entered any data to display
     if check_data_inputs:
-        first_arg_lst = [api_data, help]
-        location_check_lst = [city, c_id, zip, geo]
+        location_check_lst = [city, cid, zip, geo]
         data_check_lst = [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise]
-        loc_result_lst = [city_res, id_res, zip_res, geo_res]
+        user_inputs = [api_data, loc_data]
 
         # To display the data commands
-        displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_result_lst)
+        displaying_message(help, location_check_lst, data_check_lst, user_inputs)
     else:
         print("Enter in a location command and some data commands or call the -help command.")
         return
 
 
-def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_result_lst):
+def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     try:
-        if first_arg_lst[1]:
-            print("\n-api must be always be the first command to enter in along with the API key.\n" +
-                  "-help can only be called with a single -api command and a single location command. \n" +
+        if help:
+            print("\n-api=<API_key> : where you should put the API key in the <API_key> part. \n" +
+                  "-help can only be called alone, meaning it can't be called with other commands. \n" +
                   "\nThere are 4 commands to pick the location of the data you want to look into and they are: \n" +
-                  "   -city( city name) : the city’s name of that location, \n" +
-                  "   -cid (city’s id ) : the city’s id of that location, \n" +
-                  "   -gc ( geographic coordinates ) : the latitude and longitude of that location \n" +
-                  "   -z ( zip code ) : the zip code of that location.\n" +
+                  "   -city=<city_name> : the city’s name of that location, \n" +
+                  "   -cid=<city_id> : the city’s id of that location, \n" +
+                  "   -gc=<geographic_coordinates> : the latitude and longitude of that location \n" +
+                  "   -z=<zip_code> : the zip code of that location.\n" +
                   "\nAfter choosing a location command, you have 8 information commands and they are: \n" +
                   "   -time : the time when the data was taken, \n" +
-                  "   -temp : the temperature range of the location default is in celsius, \n" +
+                  "   -temp : the temperature range of the location default is in celsius, if there are no inputs stated. \n" +
                   "   -pressure : the air pressure in that location, \n" +
                   "   -cloud :  the number of clouds present at the location, \n" +
                   "   -humidity: the humidity of the location, \n" +
@@ -205,26 +209,26 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
                   "   -sunset : the time the sun settled at the location, \n" +
                   "   -sunrise : the time the sun rises at that location.")
             return
+        [api_key, loc_data] = user_inputs
 
-        api_key = first_arg_lst[0]
         base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
         if location_check_lst[0]:
-            city_name = loc_result_lst[0]
+            city_name = loc_data
             complete_url = base_url + "appid=" + api_key + "&q=" + city_name
         elif location_check_lst[1]:
-            city_id = loc_result_lst[1]
+            city_id = loc_data
             complete_url = base_url + "appid=" + api_key + "&id=" + city_id
         elif location_check_lst[2]:
-            if "," in loc_result_lst[2]:
-                zip_code = loc_result_lst[2]
+            if "," in loc_data:
+                zip_code = loc_data
                 complete_url = base_url + "appid=" + api_key + "&zip=" + zip_code
             else:
                 print("\nWhen entering the zip code and the country code for this command, separate them with a ','")
                 return
         elif location_check_lst[3]:
-            if "," in loc_result_lst[3]:
-                geo = loc_result_lst[3].split(',')
+            if "," in loc_data:
+                geo = loc_data.split(',')
                 lat = geo[0]
                 lon = geo[1]
                 complete_url = base_url + "appid=" + api_key + "&lat=" + lat + "&lon=" + lon
@@ -259,7 +263,7 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
                 print("The temperature ranges from " + str(fahrenheit_min) + " to " + str(fahrenheit_max) + " fahrenheit. ")
         if pressure:
             pressure_result = json_result['main']['pressure']
-            print("The pressure is " + str(pressure_result) + " hPa. ")
+            print("The atmospheric pressure is " + str(pressure_result) + "hPa. ")
         if cloud:
             description = json_result['weather'][0]['description']
             cloudiness = json_result['clouds']['all']
@@ -276,10 +280,10 @@ def displaying_message(first_arg_lst, location_check_lst, data_check_lst, loc_re
             time_string = get_time_string(json_result['sys']['sunset'])
             print("The sun sets at " + time_string)
         if sunrise:
-            time_string = get_time_string(json_result['sys']['sunset'])
-            print("The sun sets at " + time_string)
+            time_string = get_time_string(json_result['sys']['sunrise'])
+            print("The sun rises at " + time_string)
     except HTTPError:
-        print("\nWrong inputs given to the commands.")
+        print("\nEntered in wrong inputs given to the commands.")
 
 
 def get_date_and_time_string(seconds):
