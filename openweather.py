@@ -3,6 +3,7 @@ import urllib.request
 import json
 import time
 from urllib.error import HTTPError
+import requests
 # To get the arguments the user entered in
 command_arg = sys.argv
 
@@ -222,8 +223,10 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             # If the user never mentioned any location commands
             raise Exception("Please enter a location command")
 
-        response = urllib.request.urlopen(complete_url)
-        json_result = json.loads(response.read())
+        response = requests.get(complete_url)
+        json_result = response.json()
+        # response = urllib.request.urlopen(complete_url)
+        # json_result = json.loads(response.read())
 
         [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
