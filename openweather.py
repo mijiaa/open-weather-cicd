@@ -9,7 +9,6 @@ command_arg = sys.argv
 
 # python openweather.py -api=170dae04cac7827d30fd3679c496ffb4
 
-
 # class lengthError(Exception):
 #     print("\nEnter in some commands to get data from a location or use the -help command.")
 #     pass
