@@ -30,8 +30,7 @@ def check_command_args(command_arg):
 
     # Check whether user hasn't entered in any arguments other than the file name
     if len(command_arg) < 1:
-        print("Enter in some commands to get data from a location or use the -help command.")
-        return
+        raise Exception("Enter in some commands to get data from a location or use the -help command.")
 
     for i in range(1, len(command_arg)):
         # Check whether the user entered in an input along with a command
@@ -42,58 +41,51 @@ def check_command_args(command_arg):
 
             # Check whether the command is one of this commands
             if command not in ['-api', '-city', '-z', '-gc', '-cid', '-temp']:
-                print("\nOnly the commands -api, -city, -cid, -gc, -z and -temp allows inputs.")
-                return
+                raise Exception("Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.")
         else:
             # Command that doesn't need a input
             command = command_arg[i]
             data = None
 
             if command in ['-api', '-city', '-z', '-gc', '-cid']:
-                print("\nPlease enter an input using a '=' after the command.\nEg. -city=London")
-                return
+                raise Exception("Please enter an input using a '=' after the command.\nEg. -city=London")
 
         # Check if the command exist in the list of commands
         if command not in command_list:
-            print("\nCommands aren't spelled correctly.")
-            return
+            raise Exception("Commands aren't spelled correctly.")
+
         elif command == "-api":
             # Check if -api was called before
             if api:
-                print("\nMultiple chosen API keys given are specified.")
-                return
+                raise Exception("Multiple chosen API keys given are specified.")
             else:
                 api = True
                 api_data = data
         elif command == '-city':
             # Check whether a location command was called before
             if check_loc:
-                print("\nMultiple chosen locations are specified.")
-                return
+                raise Exception("Multiple chosen locations are specified.")
             else:
                 city = True
                 loc_data = data
                 check_loc = True
         elif command == '-cid':
             if check_loc:
-                print("\nMultiple chosen locations are specified.")
-                return
+                raise Exception("Multiple chosen locations are specified.")
             else:
                 cid = True
                 loc_data = data
                 check_loc = True
         elif command == '-z':
             if check_loc:
-                print("\nMultiple chosen locations are specified.")
-                return
+                raise Exception("\nMultiple chosen locations are specified.")
             else:
                 zip = True
                 loc_data = data
                 check_loc = True
         elif command == '-gc':
             if check_loc:
-                print("\nMultiple chosen locations are specified.")
-                return
+                raise Exception("Multiple chosen locations are specified.")
             else:
                 geo = True
                 loc_data = data
@@ -101,16 +93,14 @@ def check_command_args(command_arg):
         elif command == '-time':
             # Check whether the time command was called before
             if time:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 time = True
                 # To check whether the user mentioned any data they want to display
                 check_data_inputs = True
         elif command == '-temp':
             if temp:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 temp = True
                 check_data_inputs = True
@@ -124,46 +114,39 @@ def check_command_args(command_arg):
                     temp_data = True
                 # User misspelled the unit or gave the wrong unit
                 else:
-                    print("\nWrong unit of temperature. Either in fahrenheit or celsius.")
-                    return
+                    raise Exception("Wrong unit of temperature. Either in fahrenheit or celsius.")
         elif command == '-pressure':
             if pressure:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 pressure = True
                 check_data_inputs = True
         elif command == '-cloud':
             if cloud:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 cloud = True
         elif command == '-humidity':
             if humidity:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 humidity = True
                 check_data_inputs = True
         elif command == '-wind':
             if wind:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 wind = True
                 check_data_inputs = True
         elif command == '-sunset':
             if sunset:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 sunset = True
                 check_data_inputs = True
         elif command == '-sunrise':
             if sunrise:
-                print("\nMultiple chosen data are specified.")
-                return
+                raise Exception("Multiple chosen data are specified.")
             else:
                 sunrise = True
                 check_data_inputs = True
@@ -173,8 +156,7 @@ def check_command_args(command_arg):
                 help = True
             else:
                 # -help can't be called with other commands
-                print("\n-help command can only be called alone. ")
-                return
+                raise IndexError("-help command can only be called alone. ")
 
     # Check whether the user entered any data to display
     if check_data_inputs:
@@ -184,9 +166,10 @@ def check_command_args(command_arg):
 
         # To display the data commands
         displaying_message(help, location_check_lst, data_check_lst, user_inputs)
+
+        return [help, location_check_lst, data_check_lst, user_inputs]
     else:
-        print("Enter in a location command and some data commands or call the -help command.")
-        return
+        raise IndexError("Enter in a location command and some data commands or call the -help command.")
 
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
@@ -224,8 +207,8 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
                 zip_code = loc_data
                 complete_url = base_url + "appid=" + api_key + "&zip=" + zip_code
             else:
-                print("\nWhen entering the zip code and the country code for this command, separate them with a ','")
-                return
+                raise ValueError("\nWhen entering the zip code and the country code for this command, separate them with a ','")
+
         elif location_check_lst[3]:
             if "," in loc_data:
                 geo = loc_data.split(',')
@@ -233,12 +216,10 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
                 lon = geo[1]
                 complete_url = base_url + "appid=" + api_key + "&lat=" + lat + "&lon=" + lon
             else:
-                print("\nWhen entering the latitude and longitude coordinates for this command, separate them with a ','")
-                return
+                raise ValueError("When entering the latitude and longitude coordinates for this command, separate them with a ','")
         else:
             # If the user never mentioned any location commands
-            print("\nPlease enter a location command")
-            return
+            raise Exception("Please enter a location command")
 
         response = urllib.request.urlopen(complete_url)
         json_result = json.loads(response.read())
@@ -283,7 +264,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             time_string = get_time_string(json_result['sys']['sunrise'])
             print("The sun rises at " + time_string)
     except HTTPError:
-        print("\nEntered in wrong inputs given to the commands.")
+        raise ValueError("Entered in wrong inputs given to the commands.")
 
 
 def get_date_and_time_string(seconds):
@@ -313,49 +294,10 @@ def get_time_string(seconds):
 
     return time_string
 
-# command_city = command_arg[2].split("=")
-# if command_city[1] == " ":
-#     raise Exception("spaces are found between command data")
-#
-# base_url = "http://api.openweathermap.org/data/2.5/weather?"
-# if command_city[0] == "-city":
-#     city_name = command_city[1]
-#     complete_url = base_url + "appid=" + api_key + "&q=" + city_name
-#
-# elif command_city[0] == "-cid":
-#     city_code = command_city[1]
-#     complete_url = base_url + "appid=" + api_key + "&id=" + city_code
-# elif command_city[0] == "-z":
-#     city_zipcode = command_city[1]
-#     complete_url = base_url + "appid=" + api_key + "&zip=" +  city_zipcode
-#     #api.openweathermap.org/data/2.5/weather?zip=94040,us, zip code
-# # elif  comm
-# #
-# # se
-# else :
-#     raise Exception("location command entered is not valid")
-
-#
-# #making json requests
-# response = urllib.request.urlopen(complete_url)
-# json_res = json.loads(response.read())
-# def data_command_process(lst,index):
-#     if lst[index] == "-time":
-#         output_result.append(json_res["time"])
-#     if lst
 
 check_command_args(command_arg)
 
-# complete_url = base_url + "appid=" + API + "&lat=3.0567"  + "&lon=101.5851"
-# #
-# # #making json requests
-# try:
-#     response = urllib.request.urlopen(complete_url)
-#     json_res = json.loads(response.read())
-#     print(json_res)
-#     print(json_res.dt)
-# except HTTPError:
-#     raise Exception("mreo")
+
 
 
 
