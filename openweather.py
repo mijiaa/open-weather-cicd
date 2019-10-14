@@ -192,6 +192,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
                   "   -sunset : the time the sun settled at the location, \n" +
                   "   -sunrise : the time the sun rises at that location.")
             return
+
         [api_key, loc_data] = user_inputs
 
         base_url = "http://api.openweathermap.org/data/2.5/weather?"
@@ -226,7 +227,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
 
         [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
-        print("\n")
+        print("\n  ")
 
         if time:
             time_string = get_date_and_time_string(json_result['dt'])
@@ -285,7 +286,6 @@ def get_date_and_time_string(seconds):
 
 def get_time_string(seconds):
     result = time.localtime(seconds)
-
     time_string = ""
 
     time_string += str(result.tm_hour) + ":"
@@ -295,9 +295,5 @@ def get_time_string(seconds):
     return time_string
 
 
-check_command_args(command_arg)
-
-
-
-
-
+if __name__ == "__main__":
+    print(check_command_args(command_arg))
