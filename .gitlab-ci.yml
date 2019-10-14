@@ -2,7 +2,6 @@ image: python:3.5
 test:
     script:
         - pip install coverage
-        - pip install urllib3
         - pip install requests
         - python3 openweather_unittest.py
         - coverage run --branch openweather_unittest.py
