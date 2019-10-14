@@ -2,6 +2,6 @@ image: python:3.5
 test:
     script:
         - pip install coverage
-        - python3 openweather.py
-        - coverage run --branch openweather.py
+        - python3 openweather_unittest.py
+        - coverage run --branch openweather_unittest.py
         - coverage report -m
