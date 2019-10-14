@@ -10,6 +10,11 @@ command_arg = sys.argv
 # python openweather.py -api=170dae04cac7827d30fd3679c496ffb4
 
 
+# class lengthError(Exception):
+#     print("\nEnter in some commands to get data from a location or use the -help command.")
+#     pass
+
+
 def check_command_args(command_arg):
     # Listing out all the possible command-line commands
     command_list = ["-api", "-help", "-city", "-cid", "-gc", "-z", "-time", "-temp", "-pressure", "-cloud", "-humidity", "-wind", "-sunset", "-sunrise"]
@@ -92,8 +97,10 @@ def check_command_args(command_arg):
                 loc_data = data
                 check_loc = True
         elif command == '-time':
+            print("moew")
             # Check whether the time command was called before
             if time:
+                print("sggg")
                 raise Exception("Multiple chosen data are specified.")
             else:
                 time = True

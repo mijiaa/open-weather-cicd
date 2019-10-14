@@ -11,6 +11,12 @@ class openWeatherTests(unittest.TestCase):
         actual_result = [False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London']]
         self.assertEqual(result, actual_result, "The checking of the -time is wrong.")
 
+    # Check if the checking of multiple -time is functioning
+    def test_multiple_time_command(self):
+        commands = ['openweather.py', '-time', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
+
+        self.assertRaisesRegex(Exception, "Multiple chosen data are specified.", check_command_args, commands)
+
     # Check if the default of the -temp command is functioning
     def test_temp_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-temp']
@@ -89,6 +95,8 @@ class openWeatherTests(unittest.TestCase):
 
         actual_result = [True, [False, False, False, False], [False, False, True, False, False, False, False, False, False], [None, None]]
         self.assertEqual(result, actual_result, "The checking of the -help is wrong.")
+
+
 
 if __name__ == "__main__":
     unittest.main()
