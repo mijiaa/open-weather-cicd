@@ -3,7 +3,7 @@ test:
     script:
         - pip install coverage
         - pip install urllib3
-        - pip install urllib.request
+        - pip install urllib3.request
         - python3 openweather_unittest.py
         - coverage run --branch openweather_unittest.py
         - coverage report -m
