@@ -128,14 +128,26 @@ class openWeatherTests(unittest.TestCase):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_no_inputs(self):
+    def test_no_commands(self):
         commands = []
         self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help command.", check_command_args, commands)
+
+    def test_no_inputs_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunset=time' ]
+        self.assertRaisesRegex(Exception,
+                               "Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.",
+                               check_command_args, commands)
 
     def test_inputs_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
         self.assertRaisesRegex(Exception,
                                "Please enter an input using a '=' after the command.\nEg. -city=London",
+                               check_command_args, commands)
+
+    def test_invalid_inputs_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-what']
+        self.assertRaisesRegex(Exception,
+                               "Commands aren't spelled correctly.",
                                check_command_args, commands)
 
 
