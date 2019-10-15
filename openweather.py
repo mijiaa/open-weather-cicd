@@ -157,7 +157,7 @@ def check_command_args(command_arg):
                 check_data_inputs = True
             else:
                 # -help can't be called with other commands
-                raise IndexError("-help command can only be called alone. ")
+                raise Exception("-help command can only be called alone. ")
 
     # Check whether the user entered any data to display
     if check_data_inputs:
@@ -170,7 +170,7 @@ def check_command_args(command_arg):
 
         return [help, location_check_lst, data_check_lst, user_inputs]
     else:
-        raise IndexError("Enter in some data commands or call the -help command.")
+        raise Exception("Enter in a location command and some data commands or call the -help command.")
 
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):

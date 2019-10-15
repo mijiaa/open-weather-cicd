@@ -159,6 +159,64 @@ class openWeatherTests(unittest.TestCase):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London']
 
         self.assertRaisesRegex(IndexError, "Enter in some data commands or call the -help command.", check_command_args, commands)
+    def test_city_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London','-sunrise']
+        result = check_command_args(commands)
+        actual_result = [False, [True, False, False, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', 'London']]
+        self.assertEqual(result, actual_result, "The checking of the -city is wrong.")
+
+    def test_zip_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise']
+        result = check_command_args(commands)
+        actual_result =[False, [False, False, True, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '94040,us']]
+        self.assertEqual(result, actual_result, "The checking of the -z is wrong.")
+
+    def test_gc_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-gc=35,139','-sunrise']
+        result = check_command_args(commands)
+        actual_result = [False, [False, False, False, True], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '35,139']]
+        self.assertEqual(result, actual_result, "The checking of the -gc is wrong.")
+
+    def test_cid_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise']
+        result = check_command_args(commands)
+        actual_result = [False, [False, True, False, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '2172797']]
+        self.assertEqual(result, actual_result, "The checking of the -cid is wrong.")
+
+    def test_multi_loc_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise', '-city=London']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_dup_multi_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_no_commands(self):
+        commands = []
+        self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help command.", check_command_args, commands)
+
+    def test_no_inputs_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunset=time' ]
+        self.assertRaisesRegex(Exception,
+                               "Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.",
+                               check_command_args, commands)
+
+    def test_inputs_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
+        self.assertRaisesRegex(Exception,
+                               "Please enter an input using a '=' after the command.\nEg. -city=London",
+                               check_command_args, commands)
+
+    def test_invalid_inputs_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-what']
+        self.assertRaisesRegex(Exception,
+                               "Commands aren't spelled correctly.",
+                               check_command_args, commands)
+
+
+
+
+
 
 
 if __name__ == "__main__":
