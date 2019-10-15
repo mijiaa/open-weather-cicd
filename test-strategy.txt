@@ -1,0 +1,1 @@
+So our main test strategy is to use branch coverage.
