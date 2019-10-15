@@ -170,7 +170,7 @@ def check_command_args(command_arg):
 
         return [help, location_check_lst, data_check_lst, user_inputs]
     else:
-        raise Exception("Enter in a location command and some data commands or call the -help command.")
+        raise Exception("Enter in some data commands or call the -help command.")
 
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):

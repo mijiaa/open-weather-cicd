@@ -137,8 +137,9 @@ class openWeatherTests(unittest.TestCase):
     def test_invalid_help_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time', '-help']
 
-        self.assertRaisesRegex(IndexError, "-help command can only be called alone. ", check_command_args, commands)
+        self.assertRaisesRegex(Exception, "-help command can only be called alone. ", check_command_args, commands)
 
+    #
     def test_check_input_check_with_one_input(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
         result = check_command_args(commands)
@@ -157,7 +158,8 @@ class openWeatherTests(unittest.TestCase):
     def test_check_input_check_with_no_input(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London']
 
-        self.assertRaisesRegex(IndexError, "Enter in some data commands or call the -help command.", check_command_args, commands)
+        self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
+
     def test_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London','-sunrise']
         result = check_command_args(commands)
