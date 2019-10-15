@@ -83,7 +83,6 @@ class openWeatherTests(unittest.TestCase):
 
         self.assertRaisesRegex(Exception, "Multiple -cloud commands are specified.", check_command_args, commands)
 
-
     # Check if the default of the -humidity command is functioning
     def test_humidity_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-humidity']
