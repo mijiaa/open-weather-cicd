@@ -1,17 +1,11 @@
 import sys
-import urllib.request
-import json
 import time
-from urllib.error import HTTPError
 import requests
+
 # To get the arguments the user entered in
 command_arg = sys.argv
 
 # python openweather.py -api=170dae04cac7827d30fd3679c496ffb4
-
-# class lengthError(Exception):
-#     print("\nEnter in some commands to get data from a location or use the -help command.")
-#     pass
 
 
 def check_command_args(command_arg):
@@ -96,18 +90,16 @@ def check_command_args(command_arg):
                 loc_data = data
                 check_loc = True
         elif command == '-time':
-            print("moew")
             # Check whether the time command was called before
             if time:
-                print("sggg")
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -time commands are specified.")
             else:
                 time = True
                 # To check whether the user mentioned any data they want to display
                 check_data_inputs = True
         elif command == '-temp':
             if temp:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -temp commands are specified.")
             else:
                 temp = True
                 check_data_inputs = True
@@ -124,37 +116,37 @@ def check_command_args(command_arg):
                     raise Exception("Wrong unit of temperature. Either in fahrenheit or celsius.")
         elif command == '-pressure':
             if pressure:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -pressure commands are specified.")
             else:
                 pressure = True
                 check_data_inputs = True
         elif command == '-cloud':
             if cloud:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -cloud commands are specified.")
             else:
                 cloud = True
                 check_data_inputs = True
         elif command == '-humidity':
             if humidity:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -humidity commands are specified.")
             else:
                 humidity = True
                 check_data_inputs = True
         elif command == '-wind':
             if wind:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -wind commands are specified.")
             else:
                 wind = True
                 check_data_inputs = True
         elif command == '-sunset':
             if sunset:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -sunset commands are specified.")
             else:
                 sunset = True
                 check_data_inputs = True
         elif command == '-sunrise':
             if sunrise:
-                raise Exception("Multiple chosen data are specified.")
+                raise Exception("Multiple -sunrise commands are specified.")
             else:
                 sunrise = True
                 check_data_inputs = True
@@ -178,11 +170,10 @@ def check_command_args(command_arg):
 
         return [help, location_check_lst, data_check_lst, user_inputs]
     else:
-        raise IndexError("Enter in a location command and some data commands or call the -help command.")
+        raise IndexError("Enter in some data commands or call the -help command.")
 
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
-    # try:
     if help:
         print("\n-api=<API_key> : where you should put the API key in the <API_key> part. \n" +
               "-help can only be called alone, meaning it can't be called with other commands. \n" +
@@ -218,7 +209,6 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             complete_url = base_url + "appid=" + api_key + "&zip=" + zip_code
         else:
             raise ValueError("\nWhen entering the zip code and the country code for this command, separate them with a ','")
-
     elif location_check_lst[3]:
         if "," in loc_data:
             geo = loc_data.split(',')
@@ -232,14 +222,10 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         raise Exception("Please enter a location command")
 
     response = requests.get(complete_url)
-
     if response.status_code == 404:
         raise ValueError("Entered in wrong inputs given to the commands.")
 
     json_result = response.json()
-
-    # response = urllib.request.urlopen(complete_url)
-    # json_result = json.loads(response.read())
 
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
@@ -280,8 +266,6 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     if sunrise:
         time_string = get_time_string(json_result['sys']['sunrise'])
         print("The sun rises at " + time_string)
-    # except:
-    #     raise ValueError("Entered in wrong inputs given to the commands.")
 
 
 def get_date_and_time_string(seconds):
@@ -310,6 +294,6 @@ def get_time_string(seconds):
 
     return time_string
 
-
+# To execute the program
 if __name__ == "__main__":
     print(check_command_args(command_arg))
