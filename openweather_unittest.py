@@ -1,10 +1,9 @@
 from openweather import *
 import unittest
-from unittest.mock import MagicMock
 from unittest import mock
 
 
-class check_command_args_test(unittest.TestCase):
+class CheckCommandArgsTestCases(unittest.TestCase):
     def test_no_commands(self):
         commands = []
         self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help "
@@ -19,13 +18,8 @@ class check_command_args_test(unittest.TestCase):
 
     # check if user enter api key
     def test_api_command(self):
-        commands =  ['openweather.py', '-city=London']
-        self.assertRaisesRegex(Exception, "API key is not found", check_command_args, commands)
-
-    # check if user specified a location
-    def test_location_input(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4']
-        self.assertRaisesRegex(Exception, "Location is not specified", check_command_args, commands)
+        commands = ['openweather.py', '-city=London']
+        self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 
     # check if user enter an input for commands that allow input
     def test_inputs_command(self):
@@ -251,7 +245,7 @@ class check_command_args_test(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
 
 
-class get_json_data_test(unittest.TestCase):
+class DisplayingMessageTestCases(unittest.TestCase):
     def mocked_requests_get(*args, **kwargs):
         class MockResponse:
             def __init__(self, json_data, status_code):
@@ -263,48 +257,89 @@ class get_json_data_test(unittest.TestCase):
 
         if args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&q=London':
             return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
-        elif args[0] == [False, [True, False, False, False], [True, False, False, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London']]:
+
+        elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&id=2172797':
             return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
-        elif args[0] == [False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London']]:
-            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
-        elif args[0] == [False, [True, False, False, False], [False, True,True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London']]:
-            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+
+        elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&lat=35&lon=139':
+            return MockResponse({'coord': {'lon': 139, 'lat': 35}, 'weather': [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 'base': 'stations', 'main': {'temp': 289.11, 'pressure': 1023, 'humidity': 89, 'temp_min': 288.15, 'temp_max': 289.82}, 'wind': {'speed': 0.89, 'deg': 22, 'gust': 0.45}, 'clouds': {'all': 100}, 'dt': 1571238435, 'sys': {'type': 3, 'id': 2003105, 'country': 'JP', 'sunrise': 1571259042, 'sunset': 1571299679}, 'timezone': 32400, 'id': 1851632, 'name': 'Shuzenji', 'cod': 200}, 200)
+
+        elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&zip=94040,us':
+            return MockResponse({'coord': {'lon': -122.09, 'lat': 37.39}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 282.92, 'pressure': 1017, 'humidity': 87, 'temp_min': 279.82, 'temp_max': 287.59}, 'visibility': 16093, 'wind': {'speed': 1.984, 'deg': 310}, 'clouds': {'all': 75}, 'dt': 1571238555, 'sys': {'type': 1, 'id': 5310, 'country': 'US', 'sunrise': 1571235420, 'sunset': 1571275831}, 'timezone': -25200, 'id': 0, 'name': 'Mountain View', 'cod': 200}, 200)
 
         return MockResponse(None, 404)
 
-    # test if overall Json data process output is correct except for time
+    # Test if the city's concatenation of the base url, API key and the user's input for the city command is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_fetch(self, mock_get):
-        output_str= displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        print(output_str)
-        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9. " \
-                            "The atmospheric pressure is 1001hPa. It is likely to be broken clouds with a cloudiness of 75%. " \
-                            "It is likely to be broken clouds with a humidity of 75%. " \
-                            "A wind speed of 6.7m/s from 280 degrees. " \
-                            "The sun sets at 1:6:42. The sun rises at 14:25:17. "
+    def test_get_city_json(self, mock_get):
+        output_str = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9."
+        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -city command.")
 
-        self.assertEqual(output_str,actual_output_str,"JSON data handling has error")
+    # Test if the cid's concatenation of the base url, API key and the user's input for the cid command is correct
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_get_cid_json(self, mock_get):
+        output_str = displaying_message(False, [False, True, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '2172797'])
+        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9."
+        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
+
+    # Test if the gc's concatenation of the base url, API key and the user's input for the gc command is correct
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_get_gc_json(self, mock_get):
+        output_str = displaying_message(False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '35,139'])
+        actual_output_str = "Time of weather shown is on 2019-10-16 23:7:15."
+        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -gc command.")
+
+    # Test if the z's concatenation of the base url, API key and the user's input for the z command is correct
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_get_z_json(self, mock_get):
+        output_str = displaying_message(False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040,us'])
+        actual_output_str = "Time of weather shown is on 2019-10-16 23:9:15."
+        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
+
+    # Test whether user input is the wrong format for the gc command
+    def test_correct_input_format_gc(self):
+        arg = False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '39&139']
+        self.assertRaisesRegex(Exception, "When entering the latitude and longitude coordinates for this command, separate them with a ','", displaying_message, arg[0], arg[1], arg[2], arg[3])
+
+    # Test whether user input is missed the country code for the z command
+    def test_correct_input_format_z(self):
+        arg = False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040']
+        self.assertRaisesRegex(Exception, "When entering the zip code and the country code for this command, separate them with a ','", displaying_message, arg[0], arg[1], arg[2], arg[3])
+
+    # Test if the user has enter a non existent city name
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_invalid_user_input(self, mock_get):
+        arg = False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'test']
+        self.assertRaisesRegex(Exception, "Entered in wrong inputs given to the commands.", displaying_message, arg[0], arg[1], arg[2], arg[3])
 
     # test if Json data process for temp=fahrenheit output is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_temp_fahrenheit(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         print(output_str)
-        actual_output_str = "The temperature ranges from 33.88 to 33.91 fahrenheit. "
+        actual_output_str = "The temperature ranges from 33.88 to 33.91 fahrenheit."
         self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
 
     # test if Json data process for temp=celsius output is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_temp_celsius(self):
-        output_str = displaying_message(False, [True, False, False, False], [False, True,True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        actual_output_str = "The temperature ranges from 12.78 to 15.56 celsius. "
+    def test_temp_celsius(self, mock_get):
+        output_str = displaying_message(False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        actual_output_str = "The temperature ranges from 11.67 to 17.22 celsius."
         self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
 
-
+    # test if overall Json data process output is correct except for temp
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_invalid_user_input(self):
-        arg=  False, [True, False, False, False],[False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'test']
-        self.assertRaisesRegex(Exception, "Entered in wrong inputs given to the commands.", displaying_message,arg[0],arg[1],arg[2],arg[3])
+    def test_fetch(self, mock_get):
+        output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        print(output_str)
+        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9." \
+                            "The atmospheric pressure is 1001hPa.It is likely to be broken clouds with a cloudiness of 75%." \
+                            "It is likely to be broken clouds with a humidity of 75%." \
+                            "A wind speed of 6.7m/s from 280 degrees." \
+                            "The sun sets at 1:6:42.The sun rises at 14:25:17."
+
+        self.assertEqual(output_str, actual_output_str, "JSON data handling has error")
 
 
 if __name__ == "__main__":
