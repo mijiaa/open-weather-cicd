@@ -285,6 +285,7 @@ class DisplayingMessageTestCases(unittest.TestCase):
     def test_get_gc_json(self, mock_get):
         output_str = displaying_message(False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '35,139'])
         actual_output_str = "Time of weather shown is on 2019-10-16 23:7:15."
+
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -gc command.")
 
     # Test if the z's concatenation of the base url, API key and the user's input for the z command is correct
@@ -314,7 +315,7 @@ class DisplayingMessageTestCases(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_temp_fahrenheit(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        print(output_str)
+        # print(output_str)
         actual_output_str = "The temperature ranges from 33.88 to 33.91 fahrenheit."
         self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
 
@@ -329,7 +330,7 @@ class DisplayingMessageTestCases(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_fetch(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        print(output_str)
+        # print(output_str)
         actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9." \
                             "The atmospheric pressure is 1001hPa.It is likely to be broken clouds with a cloudiness of 75%." \
                             "It is likely to be broken clouds with a humidity of 75%." \

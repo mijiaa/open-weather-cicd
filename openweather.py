@@ -216,7 +216,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         raise Exception("Entered in wrong inputs given to the commands.")
     json_result = response.json()
 
-    print(json_result)
+    # print(json_result)
 
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
