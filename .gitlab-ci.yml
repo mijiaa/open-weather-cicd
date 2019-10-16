@@ -3,6 +3,7 @@ test:
     script:
         - pip install coverage
         - pip install requests
+        - pip install unittest
         - python3 openweather_unittest.py
         - coverage run --branch openweather_unittest.py
         - coverage report -m
