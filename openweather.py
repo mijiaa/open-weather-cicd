@@ -151,13 +151,13 @@ def check_command_args(command_arg):
                 sunrise = True
                 check_data_inputs = True
         elif command == '-help':
-            # Check if the first argument is -help
-            if len(command_arg) == 2:
-                help = True
-                check_data_inputs = True
-            else:
+            # Check if the first argument is -help and is the only argument
+            if len(command_arg) != 2:
                 # -help can't be called with other commands
                 raise Exception("-help command can only be called alone. ")
+            else:
+                help = True
+                check_data_inputs = True
 
     # Check whether the user entered any data to display
     if check_data_inputs:
