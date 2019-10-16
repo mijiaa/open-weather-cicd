@@ -180,9 +180,6 @@ def check_command_args(command_arg):
     else:
         raise Exception("Enter in some data commands or call the -help command.")
 
-
-
-
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     if help:
         print("\n-api=<API_key> : where you should put the API key in the <API_key> part. \n" +
@@ -237,6 +234,12 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
 
     json_result = response.json()
 
+    read_json(json_result, data_check_lst)
+
+    return json_result
+
+
+def read_json(json_result, data_check_lst):
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
     print("\n  ")
@@ -278,6 +281,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         result_str +="The sun rises at " + time_string
 
     return result_str
+
 
 def get_date_and_time_string(seconds):
     result = time.localtime(seconds)
