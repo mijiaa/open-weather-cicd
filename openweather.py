@@ -159,7 +159,7 @@ def check_command_args(command_arg):
                 help = True
                 check_data_inputs = True
 
-    # if api_data is None and help is False:
+    #  Check if user have -api
     if api is False and help is False:
         raise Exception("API key is was not inputted. You may add it with the -api command")
     # Check whether the user entered any data to display
