@@ -1,55 +1,77 @@
 from openweather import *
 import unittest
+from unittest.mock import MagicMock
 
 
 class openWeatherTests(unittest.TestCase):
-    def test_no_commands(self):
-        commands = []
-        self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help command.", check_command_args, commands)
 
+
+    def test_no_commands(self):
+        commands = ['openweather.py']
+        self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help "
+                                           "command.", check_command_args, commands)
+
+    # check if user enter an input for commands that do not allow input
     def test_no_inputs_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunset=time' ]
         self.assertRaisesRegex(Exception,
                                "Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.",
                                check_command_args, commands)
 
+    # check if user enter api key
+    def test_api_command(self):
+        commands =  ['openweather.py', '-city=London']
+        self.assertRaisesRegex(Exception, "API key is not found", check_command_args, commands)
+
+    # check if user specified a location
+    def test_location_input(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4']
+        self.assertRaisesRegex(Exception, "Location is not specified", check_command_args, commands)
+
+    # check if user enter an input for commands that allow input
     def test_inputs_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
         self.assertRaisesRegex(Exception,
                                "Please enter an input using a '=' after the command.\nEg. -city=London",
                                check_command_args, commands)
 
+    # check if user entered any invalid commands
     def test_invalid_inputs_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-what']
         self.assertRaisesRegex(Exception,
                                "Commands aren't spelled correctly.",
                                check_command_args, commands)
 
+    # check if command -city is working
     def test_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London','-sunrise']
         result = check_command_args(commands)
         actual_result = [False, [True, False, False, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', 'London']]
         self.assertEqual(result, actual_result, "The checking of the -city is wrong.")
 
+    # check if command -z is working
     def test_zip_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise']
         result = check_command_args(commands)
         actual_result =[False, [False, False, True, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '94040,us']]
         self.assertEqual(result, actual_result, "The checking of the -z is wrong.")
 
+    # check if command -gc is working
     def test_gc_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-gc=35,139','-sunrise']
         result = check_command_args(commands)
         actual_result = [False, [False, False, False, True], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '35,139']]
         self.assertEqual(result, actual_result, "The checking of the -gc is wrong.")
 
+    # check if command -cid is working
     def test_cid_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise']
         result = check_command_args(commands)
         actual_result = [False, [False, True, False, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '2172797']]
         self.assertEqual(result, actual_result, "The checking of the -cid is wrong.")
 
-    def test_multi_loc_command(self):
+    # check if command -cid
+    def test_multi_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
@@ -227,8 +249,56 @@ class openWeatherTests(unittest.TestCase):
     # Check whether no data commands is valid
     def test_check_input_check_with_no_input(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London']
-
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
+
+#
+# class openWeatherDataTest(unittest.TestCase):
+#     # check if user enter commands
+#     def setUp(self):
+#         self.json = MagicMock()
+#         self.json.data = {
+#             "coord": {
+#                 "lon": -122.08,
+#                 "lat": 37.39
+#             },
+#             "weather": [
+#                 {
+#                     "id": 800,
+#                     "main": "Clear",
+#                     "description": "clear sky",
+#                     "icon": "01d"
+#                 }
+#             ],
+#             "main": {
+#                 "temp": 296.71,
+#                 "pressure": 1013,
+#                 "humidity": 53,
+#                 "temp_min": 294.82,
+#                 "temp_max": 298.71
+#             },
+#             "wind": {
+#                 "speed": 1.5,
+#                 "deg": 350
+#             },
+#             "clouds": {
+#                 "all": 1
+#             },
+#             "dt": 1560350645,
+#             "sys": {
+#                 "type": 1,
+#                 "id": 5122,
+#                 "message": 0.0139,
+#                 "country": "US",
+#                 "sunrise": 1560343627,
+#                 "sunset": 1560396563
+#             },
+#             "timezone": -25200,
+#             "id": 420006353,
+#             "name": "Mountain View",
+#             "cod": 200
+#         }
+#
+#     def test_
 
 
 if __name__ == "__main__":

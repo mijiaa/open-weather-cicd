@@ -1,8 +1,15 @@
 The first testing strategy we wanted to implement was branch coverage, where we go through every possible branch in the
 program and test every possible test input to cover all branches. We then implemented a few test cases and realised that
-we couldn't test for every single possible input. So we decided to use modified coverage/ decision coverage for our
-function, which is called check_command_args.
+we couldn't test for every single possible input. So we decide to use a mixture of branch coverage and MC\DC strategies
+for our first function which is called check_command_args and apply some black box testing like boundary value testing.
+
+The way we are going to implement branch coverage on the first function:
+1) to make test inputs to test whether the user has entered anything in
+2) to make test inputs that test every possible branch in the first checking, where we check whether the command is a
+ valid command
+3) to make test inputs to check both branches of check_data_inputs and to use boundary value testing to have more than
+data command, one data command and zero commands
 
 The way we are going to implement MC/DC on the first function:
-1) to consider the command's check. This will apply to all the checks from line 16 to 18
-2)
+1) to consider the command's check. This will apply to all the checks from line 16 and 18
+2) to consider the check_loc. This will apply to all the location command checks at line 17

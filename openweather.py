@@ -31,8 +31,10 @@ def check_command_args(command_arg):
     if len(command_arg) < 1:
         raise Exception("Enter in some commands to get data from a location or use the -help command.")
 
+
     for i in range(1, len(command_arg)):
         # Check whether the user entered in an input along with a command
+
         if "=" in command_arg[i]:
             command_split = command_arg[i].split('=')
             command = command_split[0]
@@ -159,6 +161,12 @@ def check_command_args(command_arg):
                 help = True
                 check_data_inputs = True
 
+    if api_data is None and help is False:
+        raise Exception("API key is not found ")
+
+    if loc_data is None and  help is False:
+        raise Exception("Location is not specified")
+
     # Check whether the user entered any data to display
     if check_data_inputs:
         location_check_lst = [city, cid, zip, geo]
@@ -171,6 +179,8 @@ def check_command_args(command_arg):
         return [help, location_check_lst, data_check_lst, user_inputs]
     else:
         raise Exception("Enter in some data commands or call the -help command.")
+
+
 
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
@@ -287,7 +297,6 @@ def get_date_and_time_string(seconds):
 def get_time_string(seconds):
     result = time.localtime(seconds)
     time_string = ""
-
     time_string += str(result.tm_hour) + ":"
     time_string += str(result.tm_min) + ":"
     time_string += str(result.tm_sec) + ". "
