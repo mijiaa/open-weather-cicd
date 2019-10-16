@@ -97,11 +97,9 @@ class openWeatherTests(unittest.TestCase):
 
     # Check if the default of the -temp command is functioning
     def test_temp_random_command(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-temp=fahrenheit']
-        result = check_command_args(commands)
-        # ???
-        actual_result = [False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London']]
-        self.assertEqual(result, actual_result, "The checking of the -temp command with the input of fahrenheit is wrong.")
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-temp=testing']
+
+        self.assertRaisesRegex(Exception, "Wrong unit of temperature. Either in fahrenheit or celsius.", check_command_args, commands)
 
     # Check if the checking of multiple -temp is functioning
     def test_multiple_temp_command(self):
@@ -150,6 +148,22 @@ class openWeatherTests(unittest.TestCase):
         commands = ['openweather.py', '-humidity', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-humidity']
 
         self.assertRaisesRegex(Exception, "Multiple -humidity commands are specified.", check_command_args, commands)
+
+    # Check if the default of the -wind command is functioning
+    def test_wind_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-wind']
+        result = check_command_args(commands)
+
+        actual_result = [False, [True, False, False, False],
+                         [False, False, True, False, False, False, True, False, False],
+                         ['170dae04cac7827d30fd3679c496ffb4', 'London']]
+        self.assertEqual(result, actual_result, "The checking of the -wind is wrong.")
+
+    # Check if the checking of multiple -wind is functioning
+    def test_multiple_wind_command(self):
+        commands = ['openweather.py', '-wind', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-wind']
+
+        self.assertRaisesRegex(Exception, "Multiple -wind commands are specified.", check_command_args, commands)
 
     # Check if the default of the -sunset command is functioning
     def test_sunset_command(self):
