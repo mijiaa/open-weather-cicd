@@ -251,54 +251,56 @@ class openWeatherTests(unittest.TestCase):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London']
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
 
-#
-# class openWeatherDataTest(unittest.TestCase):
-#     # check if user enter commands
-#     def setUp(self):
-#         self.json = MagicMock()
-#         self.json.data = {
-#             "coord": {
-#                 "lon": -122.08,
-#                 "lat": 37.39
-#             },
-#             "weather": [
-#                 {
-#                     "id": 800,
-#                     "main": "Clear",
-#                     "description": "clear sky",
-#                     "icon": "01d"
-#                 }
-#             ],
-#             "main": {
-#                 "temp": 296.71,
-#                 "pressure": 1013,
-#                 "humidity": 53,
-#                 "temp_min": 294.82,
-#                 "temp_max": 298.71
-#             },
-#             "wind": {
-#                 "speed": 1.5,
-#                 "deg": 350
-#             },
-#             "clouds": {
-#                 "all": 1
-#             },
-#             "dt": 1560350645,
-#             "sys": {
-#                 "type": 1,
-#                 "id": 5122,
-#                 "message": 0.0139,
-#                 "country": "US",
-#                 "sunrise": 1560343627,
-#                 "sunset": 1560396563
-#             },
-#             "timezone": -25200,
-#             "id": 420006353,
-#             "name": "Mountain View",
-#             "cod": 200
-#         }
-#
-#     def test_
+
+class openWeatherDataTest(unittest.TestCase):
+    # check if user enter commands
+    def setUp(self):
+        self.json = MagicMock()
+        self.json.data = {
+            "coord": {
+                "lon": -122.08,
+                "lat": 37.39
+            },
+            "weather": [
+                {
+                    "id": 800,
+                    "main": "Clear",
+                    "description": "clear sky",
+                    "icon": "01d"
+                }
+            ],
+            "main": {
+                "temp": 296.71,
+                "pressure": 1013,
+                "humidity": 53,
+                "temp_min": 294.82,
+                "temp_max": 298.71
+            },
+            "wind": {
+                "speed": 1.5,
+                "deg": 350
+            },
+            "clouds": {
+                "all": 1
+            },
+            "dt": 1560350645,
+            "sys": {
+                "type": 1,
+                "id": 5122,
+                "message": 0.0139,
+                "country": "US",
+                "sunrise": 1560343627,
+                "sunset": 1560396563
+            },
+            "timezone": -25200,
+            "id": 420006353,
+            "name": "Mountain View",
+            "cod": 200
+        }
+
+    def test_time(self):
+        result = [[False, [True, False, False, False], [True, False,  False, False, False, False, False, False, False], [None, None]]]
+        self.assertEqual()
 
 
 if __name__ == "__main__":

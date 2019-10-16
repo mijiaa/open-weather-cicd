@@ -240,43 +240,44 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
     print("\n  ")
-
+    result_str = ''
     if time:
         time_string = get_date_and_time_string(json_result['dt'])
-        print("Time of weather shown is " + time_string)
+        result_str += "Time of weather shown is " + time_string
     if temp:
         temp_min = json_result['main']['temp_min']
         temp_max = json_result['main']['temp_max']
         if temp_data:
             celsius_min = str(round(temp_min - 273.15, 2))
             celsius_max = str(round(temp_max - 273.15, 2))
-            print("The temperature ranges from " + celsius_min + " to " + celsius_max + " celsius. ")
+            result_str +="The temperature ranges from " + celsius_min + " to " + celsius_max + " celsius. "
         else:
             fahrenheit_min = str(round((temp_min / 273.15) * 9 / 5 + 32, 2))
             fahrenheit_max = str(round((temp_max / 273.15) * 9 / 5 + 32, 2))
-            print("The temperature ranges from " + str(fahrenheit_min) + " to " + str(fahrenheit_max) + " fahrenheit. ")
+            result_str +="The temperature ranges from " + str(fahrenheit_min) + " to " + str(fahrenheit_max) + " fahrenheit. "
     if pressure:
         pressure_result = json_result['main']['pressure']
-        print("The atmospheric pressure is " + str(pressure_result) + "hPa. ")
+        result_str += "The atmospheric pressure is " + str(pressure_result) + "hPa. "
     if cloud:
         description = json_result['weather'][0]['description']
         cloudiness = json_result['clouds']['all']
-        print("It is likely to be " + str(description) + " with a cloudiness of " + str(cloudiness) + "%. ")
+        result_str +="It is likely to be " + str(description) + " with a cloudiness of " + str(cloudiness) + "%. "
     if humidity:
         description =  json_result['weather'][0]['description']
         humidity_percent = json_result['clouds']['all']
-        print("It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%. ")
+        result_str +="It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%. "
     if wind:
         wind_speed = json_result['wind']['speed']
         wind_angle = json_result['wind']['deg']
-        print("A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees. ")
+        result_str +="A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees. "
     if sunset:
         time_string = get_time_string(json_result['sys']['sunset'])
-        print("The sun sets at " + time_string)
+        result_str +="The sun sets at " + time_string
     if sunrise:
         time_string = get_time_string(json_result['sys']['sunrise'])
-        print("The sun rises at " + time_string)
+        result_str +="The sun rises at " + time_string
 
+    return result_str
 
 def get_date_and_time_string(seconds):
     result = time.localtime(seconds)
