@@ -175,10 +175,11 @@ def check_command_args(command_arg):
 
         # To display the data commands
         displaying_message(help, location_check_lst, data_check_lst, user_inputs)
-
+        print([help, location_check_lst, data_check_lst, user_inputs])
         return [help, location_check_lst, data_check_lst, user_inputs]
     else:
         raise Exception("Enter in some data commands or call the -help command.")
+
 
 def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     if help:
@@ -198,7 +199,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
               "   -wind : the wind speed and the angle of the wind, \n" +
               "   -sunset : the time the sun settled at the location, \n" +
               "   -sunrise : the time the sun rises at that location.")
-        return
+        return True
 
     [api_key, loc_data] = user_inputs
 
@@ -215,7 +216,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             zip_code = loc_data
             complete_url = base_url + "appid=" + api_key + "&zip=" + zip_code
         else:
-            raise ValueError("\nWhen entering the zip code and the country code for this command, separate them with a ','")
+            raise Exception("\nWhen entering the zip code and the country code for this command, separate them with a ','")
     elif location_check_lst[3]:
         if "," in loc_data:
             geo = loc_data.split(',')
@@ -223,26 +224,19 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             lon = geo[1]
             complete_url = base_url + "appid=" + api_key + "&lat=" + lat + "&lon=" + lon
         else:
-            raise ValueError("When entering the latitude and longitude coordinates for this command, separate them with a ','")
+            raise Exception("When entering the latitude and longitude coordinates for this command, separate them with a ','")
     else:
         # If the user never mentioned any location commands
         raise Exception("Please enter a location command")
 
     response = requests.get(complete_url)
+    print(response)
     if response.status_code == 404:
-        raise ValueError("Entered in wrong inputs given to the commands.")
-
+        raise Exception("Entered in wrong inputs given to the commands.")
     json_result = response.json()
-
-    read_json(json_result, data_check_lst)
-
-    return json_result
-
-
-def read_json(json_result, data_check_lst):
+    print(complete_url)
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
-    print("\n  ")
     result_str = ''
     if time:
         time_string = get_date_and_time_string(json_result['dt'])
@@ -253,32 +247,33 @@ def read_json(json_result, data_check_lst):
         if temp_data:
             celsius_min = str(round(temp_min - 273.15, 2))
             celsius_max = str(round(temp_max - 273.15, 2))
-            result_str +="The temperature ranges from " + celsius_min + " to " + celsius_max + " celsius. "
+            result_str += "The temperature ranges from " + celsius_min + " to " + celsius_max + " celsius. "
         else:
             fahrenheit_min = str(round((temp_min / 273.15) * 9 / 5 + 32, 2))
             fahrenheit_max = str(round((temp_max / 273.15) * 9 / 5 + 32, 2))
-            result_str +="The temperature ranges from " + str(fahrenheit_min) + " to " + str(fahrenheit_max) + " fahrenheit. "
+            result_str += "The temperature ranges from " + str(fahrenheit_min) + " to " + str(
+                fahrenheit_max) + " fahrenheit. "
     if pressure:
         pressure_result = json_result['main']['pressure']
         result_str += "The atmospheric pressure is " + str(pressure_result) + "hPa. "
     if cloud:
         description = json_result['weather'][0]['description']
         cloudiness = json_result['clouds']['all']
-        result_str +="It is likely to be " + str(description) + " with a cloudiness of " + str(cloudiness) + "%. "
+        result_str += "It is likely to be " + str(description) + " with a cloudiness of " + str(cloudiness) + "%. "
     if humidity:
-        description =  json_result['weather'][0]['description']
+        description = json_result['weather'][0]['description']
         humidity_percent = json_result['clouds']['all']
-        result_str +="It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%. "
+        result_str += "It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%. "
     if wind:
         wind_speed = json_result['wind']['speed']
         wind_angle = json_result['wind']['deg']
-        result_str +="A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees. "
+        result_str += "A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees. "
     if sunset:
         time_string = get_time_string(json_result['sys']['sunset'])
-        result_str +="The sun sets at " + time_string
+        result_str += "The sun sets at " + time_string
     if sunrise:
         time_string = get_time_string(json_result['sys']['sunrise'])
-        result_str +="The sun rises at " + time_string
+        result_str += "The sun rises at " + time_string
 
     return result_str
 

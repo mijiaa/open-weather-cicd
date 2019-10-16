@@ -1,13 +1,12 @@
 from openweather import *
 import unittest
 from unittest.mock import MagicMock
+from unittest import mock
 
 
-class openWeatherTests(unittest.TestCase):
-
-
+class check_command_args_test(unittest.TestCase):
     def test_no_commands(self):
-        commands = ['openweather.py']
+        commands = []
         self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help "
                                            "command.", check_command_args, commands)
 
@@ -252,55 +251,81 @@ class openWeatherTests(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
 
 
-class openWeatherDataTest(unittest.TestCase):
-    # check if user enter commands
-    def setUp(self):
-        self.json = MagicMock()
-        self.json.data = {
-            "coord": {
-                "lon": -122.08,
-                "lat": 37.39
-            },
-            "weather": [
-                {
-                    "id": 800,
-                    "main": "Clear",
-                    "description": "clear sky",
-                    "icon": "01d"
-                }
-            ],
-            "main": {
-                "temp": 296.71,
-                "pressure": 1013,
-                "humidity": 53,
-                "temp_min": 294.82,
-                "temp_max": 298.71
-            },
-            "wind": {
-                "speed": 1.5,
-                "deg": 350
-            },
-            "clouds": {
-                "all": 1
-            },
-            "dt": 1560350645,
-            "sys": {
-                "type": 1,
-                "id": 5122,
-                "message": 0.0139,
-                "country": "US",
-                "sunrise": 1560343627,
-                "sunset": 1560396563
-            },
-            "timezone": -25200,
-            "id": 420006353,
-            "name": "Mountain View",
-            "cod": 200
-        }
+class get_json_data_test(unittest.TestCase):
+    def mocked_requests_get(*args, **kwargs):
+        class MockResponse:
+            def __init__(self, json_data, status_code):
+                self.json_data = json_data
+                self.status_code = status_code
 
-    def test_time(self):
-        result = [[False, [True, False, False, False], [True, False,  False, False, False, False, False, False, False], [None, None]]]
-        self.assertEqual()
+            def json(self):
+                return self.json_data
+
+        if args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&q=London':
+            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+        elif args[0] == [False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London']]:
+            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+
+        return MockResponse(None, 404)
+
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_fetch(self, mock_get):
+        # json_data = get_json_data("http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&q=London", [True, False, True, False, False, False, False, False, False])
+        # print(json_data)
+        json_data = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        print(json_data)
+
+
+
+    # Check whether no d
+    # check if user enter commands
+    # def setUp(self):
+    #     self.json = MagicMock()
+    #     self.json.data = {
+    #         "coord": {
+    #             "lon": -122.08,
+    #             "lat": 37.39
+    #         },
+    #         "weather": [
+    #             {
+    #                 "id": 800,
+    #                 "main": "Clear",
+    #                 "description": "clear sky",
+    #                 "icon": "01d"
+    #             }
+    #         ],
+    #         "main": {
+    #             "temp": 296.71,
+    #             "pressure": 1013,
+    #             "humidity": 53,
+    #             "temp_min": 294.82,
+    #             "temp_max": 298.71
+    #         },
+    #         "wind": {
+    #             "speed": 1.5,
+    #             "deg": 350
+    #         },
+    #         "clouds": {
+    #             "all": 1
+    #         },
+    #         "dt": 1560350645,
+    #         "sys": {
+    #             "type": 1,
+    #             "id": 5122,
+    #             "message": 0.0139,
+    #             "country": "US",
+    #             "sunrise": 1560343627,
+    #             "sunset": 1560396563
+    #         },
+    #         "timezone": -25200,
+    #         "id": 420006353,
+    #         "name": "Mountain View",
+    #         "cod": 200
+    #     }
+    #
+    # def test_time(self):
+    #     result = [[False, [True, False, False, False], [True, False,  False, False, False, False, False, False, False], [None, None]]]
+    #     self.assertEqual()
 
 
 if __name__ == "__main__":
