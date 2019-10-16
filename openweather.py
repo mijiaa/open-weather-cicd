@@ -262,7 +262,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
 
 
 def get_date_and_time_string(seconds):
-    result = time.localtime(seconds)
+    result = time.gmtime(seconds)
     time_string = "on "
 
     # Getting the date
@@ -278,7 +278,7 @@ def get_date_and_time_string(seconds):
 
 
 def get_time_string(seconds):
-    result = time.localtime(seconds)
+    result = time.gmtime(seconds)
     time_string = ""
     time_string += str(result.tm_hour) + ":"
     time_string += str(result.tm_min) + ":"

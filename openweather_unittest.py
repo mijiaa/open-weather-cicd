@@ -270,21 +270,21 @@ class DisplayingMessageTestCases(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_city_json(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9."
+        actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9."
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -city command.")
 
     # Test if the cid's concatenation of the base url, API key and the user's input for the cid command is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_cid_json(self, mock_get):
         output_str = displaying_message(False, [False, True, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '2172797'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9."
+        actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9."
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
 
     # Test if the gc's concatenation of the base url, API key and the user's input for the gc command is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_gc_json(self, mock_get):
         output_str = displaying_message(False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '35,139'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 23:7:15."
+        actual_output_str = "Time of weather shown is on 2019-10-16 15:7:15."
 
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -gc command.")
 
@@ -292,7 +292,7 @@ class DisplayingMessageTestCases(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_z_json(self, mock_get):
         output_str = displaying_message(False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040,us'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 23:9:15."
+        actual_output_str = "Time of weather shown is on 2019-10-16 15:9:15."
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
 
     # Test whether user input is the wrong format for the gc command
@@ -331,11 +331,11 @@ class DisplayingMessageTestCases(unittest.TestCase):
     def test_fetch(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         # print(output_str)
-        actual_output_str = "Time of weather shown is on 2019-10-16 17:35:9." \
+        actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9." \
                             "The atmospheric pressure is 1001hPa.It is likely to be broken clouds with a cloudiness of 75%." \
                             "It is likely to be broken clouds with a humidity of 75%." \
                             "A wind speed of 6.7m/s from 280 degrees." \
-                            "The sun sets at 1:6:42.The sun rises at 14:25:17."
+                            "The sun sets at 17:6:42.The sun rises at 6:25:17."
 
         self.assertEqual(output_str, actual_output_str, "JSON data handling has error")
 
