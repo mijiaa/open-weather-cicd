@@ -270,8 +270,6 @@ class get_json_data_test(unittest.TestCase):
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_fetch(self, mock_get):
-        # json_data = get_json_data("http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&q=London", [True, False, True, False, False, False, False, False, False])
-        # print(json_data)
         json_data = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         print(json_data)
 
