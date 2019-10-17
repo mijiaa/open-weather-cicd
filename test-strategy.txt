@@ -1,16 +1,152 @@
-The first testing strategy we wanted to implement was branch coverage, where we go through every possible branch in the
-program and test every possible test input to cover all branches. We then implemented a few test cases and realised that
-we couldn't test for every single possible input. So we decide to use a mixture of branch coverage and MC\DC strategies
-for our first function which is called check_command_args and apply some black box testing like boundary value testing.
+The first testing strategy we implemented is branch coverage.
+Our CheckCommandArgsTestCases test suite class go through every possible branch in the program and
+test every possible test input to cover all branches.
+But after implemented a few test cases we realized that it is redundant to have a test case for every branch.
+We then modified our strategy to combinations of MC/DC and branch coverage.
 
-The way we are going to implement branch coverage on the first function:
-1) to make test inputs to test whether the user has entered anything in
-2) to make test inputs that test every possible branch in the first checking, where we check whether the command is a
- valid command
-3) to make test inputs to check both branches of check_data_inputs and to use boundary value testing to have more than
-data command, one data command and zero commands
+Through our MC/DC strategy, we eliminated redundant test cases for a few branches.
+Thus, making our test cases more accurate and traceable. Below are test cases implemented with this strategy.
 
-The way we are going to implement MC/DC on the first function:
-1) to consider the command's check. This will apply to all the checks from line 16 and 18
-2) to consider the check_loc. This will apply to all the location command checks at line 17
-3) to consider the location's check.
+The test cases that implemented branch coverage are:
+    1) To test when user does not enter anything in
+        - test_no_command
+    2) To test whether user has entered any commands that don’t exist
+        -test_invalid_inputs_command
+    3) To test when user does not enter in the -api command
+        -test_no_api_command
+    4) To test whether the user enters any input to the -temp command
+        -test_temp_celsius_command
+        -test_temp_fahrenheit_command
+        -test_temp_random_command
+    5) To test when the user valid data commands
+        -test_check_input_check_with_one_input
+        -test_check_input_check_with_more_than_one_input
+    6) To test when user does not enter data commands
+        -Test_check_input_check_with_no_input
+
+
+The test cases that implemented modified condition/ decision coverage are:
+    1) When considering the api check in the program:
+        -test_time_command  (returns True)
+        -test_multiple_api_command (return False)
+    2) When considering the time check in the program:
+        -test_time_command  (returns True)
+        -test_multiple_time_command (return False)
+    3) When considering the temp check in the program:
+        -test_temp _command (returns True)
+        -test_multiple_temp_command
+    4) When considering the pressure check in the program:
+        -test_pressure_command (returns True)
+        -test_multiple_pressure_command (return False)
+    5) When considering the cloud check in the program:
+        -test_cloud_command (returns True)
+        -test_multiple_cloud_command (return False)
+    6) When considering the humidity check in the program:
+        -test_humidity_command (returns True)
+        -test_multiple_humidity_command
+    7) When considering the wind check in the program:
+        -test_wind_command (returns True)
+        -test_multiple_wind_command (return False)
+    8) When considering the sunset check in the program:
+        -test_sunset_command (returns True)
+        -test_multiple_sunset_command (return False)
+    9) When considering the sunrise check in the program:
+        -test_sunrise_command (returns True)
+        -test_multiple_sunrise_command (return False)
+    10) When considering the help check in the program:
+        -test_help_command (returns True)
+        -test_invalid_help_command (return False)
+    11) When considering the commands the user entered one by one:
+        a) If the command the user entered in have a “=”:
+            -test_time_command (return True)
+            -test_no_inputs_command (return False)
+        b) If the command the user entered in does not have a “=”
+            -test_time_command (return True)
+            -test_inputs_command (returns False)
+    12) When considering the location check:
+        a) In the city checking:
+            -test_city_command (returns True)
+            -test_multi_city_command (return False)
+        b)In the cid checking:
+            -test_cid_command (returns True)
+            -test_multi_cid_command (return False)
+        c) In the gc checking:
+            -test_gc_command (returns True)
+            -test_multi_gc_command (return False)
+        d) In the z checking:
+            -test_zip_command (returns True)
+            -test_multi_zip_command (return False)
+
+
+For the first 9 scenarios, the test cases in ‘a.’ happens when only one of the commands  in
+ [-time, -temp, -pressure, -cloud, -humidity, -wind, -sunset,  -sunrise] is specified because the “command”
+ variable will only enter the branch check of that specified command once.
+ The boolean variable assigned to that command check is “False” when it initially enters the branch check.
+
+The test case in “b.” happens when the same command is specified more than once because
+the “command” variable enters the branch checking of that specified command a second time.
+The boolean variable assigned to that command check was already set to True before it entered for the second time
+as the case ‘a.’ happened before it.
+
+For the 10th scenario, the test case in ‘a.’ happens when the user only enter “-help” without any arguments.
+‘b,’ happens when the user enters other commands along with the “-help” command.
+Thus a check for the number of commands given is needed.
+
+For the 11th scenario, the test case will go through the commands the user entered one by one.
+Section ‘a.’  happens when the command specified has a “=” sign in it,
+then the command are split by the equal sign to get the command argument and user input.
+The test case ‘ii.’ happens if the command is not from any of these : [-api, -city, -cid, -gc, -z, -temp],
+an exception will be raised as that command does not allow user inputs, but a user input is found.
+The test case ‘i.’ is an overlap test case from ‘2.a.’.
+Section ‘b.’ happens when the command does not have a “=” in it. The test case ‘ii.’
+happens when the command is from one of these: [-api, -city, -cid, -gc, -z],
+an exception will be raised as these commands must have a user input but user input is not found.
+
+For the 12th scenario, the test cases in ‘i.’ happens only when one of these: [-city, -cid, -gc, -z] command arguments is found
+because the “command” variable will only enter the specified command’s branch check.
+The variable called “check_loc” is initially False when it enters in the branch check.
+The test cases in ‘ii.’ happens when more than one location command argument are specified because
+the “check_loc” variable enters the branch check of the second specified location command.
+The “check_loc” was already set to True when the first location command was specified and enter its own branch check.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+For DisplayingMessageTestCases test suite class, we implemented the same strategy as CheckCommandArgsTestCases test suite
+which is a combination of branch coverage and MC/DC coverage.
+
+The mock_request_get is used to mock the ‘request.get’ function used in openweather.py.
+Inside this function we return two different JSON data.
+The first JSON data is used by the test cases:
+test_invalid_user_input, test_temp_fahrenheit, test_temp_celsius, test_wind_angle and test_fetch.
+The second JSON is used by the test case test_wind_speed.
+
+Test cases that implemented branch coverage are:
+    1) To test if the concatenation of the url for the city name is correct
+        -test_get_city_json
+    2) To test if the concatenation of the url for the city id is correct
+        -test_get_cid_json
+    3) To test when the user did not enter any location commands
+        -test_no_location_commands_given
+    4) To test when the user has entered a non-existent city name
+        -test_invalid_user_input
+    5) To test if JSON data processing for temperature in Fahrenheit is correct
+        -test_temp_fahrenheit
+    6) To test if JSON data processing for temperature in Celsius is correct
+        -test_temp_celsius
+    7) To test if JSON data processing for wind speed is correct
+        -test_wind_speed
+    8) To test if JSON data processing for wind speed and angle is correct
+        -test_wind_angle
+    9) To test if overall JSON data processing is correct except for temperature and wind
+        -test_fetch
+
+Test cases that implemented MC/DC are:
+    1) When considering whether the user input for the gc has a “,”
+        -test_get_gc_json
+        -test_incorrect_input_format_gc
+    2) When considering whether the user input for the z has a “,”
+        -test_get _z_json
+        -test_incorrect_input_format_z
+
+For both scenarios, the test case “a.” happens when the user input has a “,” sign in the user input and
+“b.” happens when the user does not have a “,” in the user input.
