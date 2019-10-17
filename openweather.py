@@ -89,6 +89,14 @@ def check_command_args(command_arg):
                 geo = True
                 loc_data = data
                 check_loc = True
+        elif command == '-help':
+            # Check if the first argument is -help and is the only argument
+            if len(command_arg) != 2:
+                # -help can't be called with other commands
+                raise Exception("-help command can only be called alone. ")
+            else:
+                help = True
+                check_data_inputs = True
         elif command == '-time':
             # Check whether the time command was called before
             if time:
@@ -150,14 +158,7 @@ def check_command_args(command_arg):
             else:
                 sunrise = True
                 check_data_inputs = True
-        elif command == '-help':
-            # Check if the first argument is -help and is the only argument
-            if len(command_arg) != 2:
-                # -help can't be called with other commands
-                raise Exception("-help command can only be called alone. ")
-            else:
-                help = True
-                check_data_inputs = True
+
 
     #  Check if user have -api
     if api is False and help is False:
