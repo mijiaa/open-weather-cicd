@@ -252,10 +252,13 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         humidity_percent = json_result['clouds']['all']
         result_str += "It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%."
     if wind:
-        # if len(json_result['wind']) == 1:
-        wind_speed = json_result['wind']['speed']
-        wind_angle = json_result['wind']['deg']
-        result_str += "A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees."
+        if len(json_result['wind']) == 1:
+            wind_speed = json_result['wind']['speed']
+            result_str += "A wind speed of " + str(wind_speed) + "m/s."
+        elif len(json_result['wind']) == 2:
+            wind_speed = json_result['wind']['speed']
+            wind_angle = json_result['wind']['deg']
+            result_str += "A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees."
     if sunset:
         time_string = get_time_string(json_result['sys']['sunset'])
         result_str += "The sun sets at " + time_string

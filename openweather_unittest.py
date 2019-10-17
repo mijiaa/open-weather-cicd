@@ -275,7 +275,7 @@ class DisplayingMessageTestCases(unittest.TestCase):
             return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
         # To be used when checking for the -cid command
         elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&id=2172797':
-            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+            return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04n'}], 'base': 'stations', 'main': {'temp': 281.01, 'pressure': 1007, 'humidity': 87, 'temp_min': 278.15, 'temp_max': 283.15}, 'visibility': 10000, 'wind': {'speed': 1.5}, 'rain': {}, 'clouds': {'all': 59}, 'dt': 1571290727, 'sys': {'type': 1, 'id': 1414, 'country': 'GB', 'sunrise': 1571293620, 'sunset': 1571331874}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
         # To be used when checking for the -gc command
         elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&lat=35&lon=139':
             return MockResponse({'coord': {'lo  n': 139, 'lat': 35}, 'weather': [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 'base': 'stations', 'main': {'temp': 289.11, 'pressure': 1023, 'humidity': 89, 'temp_min': 288.15, 'temp_max': 289.82}, 'wind': {'speed': 0.89, 'deg': 22, 'gust': 0.45}, 'clouds': {'all': 100}, 'dt': 1571238435, 'sys': {'type': 3, 'id': 2003105, 'country': 'JP', 'sunrise': 1571259042, 'sunset': 1571299679}, 'timezone': 32400, 'id': 1851632, 'name': 'Shuzenji', 'cod': 200}, 200)
@@ -331,31 +331,48 @@ class DisplayingMessageTestCases(unittest.TestCase):
         arg = False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'test']
         self.assertRaisesRegex(Exception, "Entered in wrong inputs given to the commands.", displaying_message, arg[0], arg[1], arg[2], arg[3])
 
-    # test if Json data process for temp=fahrenheit output is correct
+    # test if Json data process for temp=fahrenheit is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_temp_fahrenheit(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         actual_output_str = "The temperature ranges from 33.88 to 33.91 fahrenheit."
-        self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
+        self.assertEqual(output_str[0], actual_output_str, "JSON data handling for fahrenheit has error")
 
-    # test if Json data process for temp=celsius output is correct
+    # test if Json data process for temp=celsius is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_temp_celsius(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         actual_output_str = "The temperature ranges from 11.67 to 17.22 celsius."
-        self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
+        self.assertEqual(output_str[0], actual_output_str, "JSON data handling for fahrenheit has error")
+
+    # test if Json data process for wind speed is correct
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_wind_speed(self, mock_get):
+        output_str = displaying_message(False, [False, True, False, False],
+                                        [False, False, True, False, False, False, True, False, False],
+                                        ['170dae04cac7827d30fd3679c496ffb4', '2172797'])
+        actual_output_str = "A wind speed of 1.5m/s."
+        self.assertEqual(output_str[0], actual_output_str, "JSON data handling for wind speed has error")
+
+    # test if Json data process for wind speed and angle is correct
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_wind_angle(self, mock_get):
+        output_str = displaying_message(False, [True, False, False, False],
+                                        [False, False, False, False, False, False, True, False, False],
+                                        ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        actual_output_str = "A wind speed of 6.7m/s from 280 degrees."
+        self.assertEqual(output_str[0], actual_output_str, "JSON data handling for fahrenheit has error")
 
     # test if overall Json data process output is correct except for temp
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_fetch(self, mock_get):
-        output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True,False, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
         actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9." \
                             "The atmospheric pressure is 1001hPa.It is likely to be broken clouds with a cloudiness of 75%." \
                             "It is likely to be broken clouds with a humidity of 75%." \
-                            "A wind speed of 6.7m/s from 280 degrees." \
                             "The sun sets at 17:6:42.The sun rises at 6:25:17."
 
-        self.assertEqual(output_str, actual_output_str, "JSON data handling has error")
+        self.assertEqual(output_str[0], actual_output_str, "JSON data handling has error")
 
 
 if __name__ == "__main__":
