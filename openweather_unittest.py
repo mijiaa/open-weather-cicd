@@ -17,6 +17,15 @@ class CheckCommandArgsTestCases(unittest.TestCase):
                                "Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.",
                                check_command_args, commands)
 
+    # check if user enter api key
+    def test_api_command(self):
+        commands = ['openweather.py', '-city=London']
+        self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
+
+    def test_dup_api_command(self):
+        commands = ['openweather.py', '-city=London','-api=170dae04cac7827d30fd3679c496ffb4','-api=170dae04cac7827d30fd3679c496ffb4']
+        self.assertRaisesRegex(Exception, "Multiple chosen API keys given are specified.", check_command_args, commands)
+
     # check if user enter an input for commands that allow input
     def test_inputs_command(self):# MCDC
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
@@ -60,14 +69,24 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         actual_result = [False, [False, True, False, False], [False, False, True, False, False, False, False, False, True], ['170dae04cac7827d30fd3679c496ffb4', '2172797']]
         self.assertEqual(result, actual_result, "The checking of the -cid is wrong.")
 
-    # check if command -cid
-    def test_multi_city_command(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise', '-city=London']
+    # check if program handles duplication of location inputs
+    def test_multi_cid_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-sunrise', '-city=London', '-cid=2172797']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_command(self):
+    def test_dup_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_multi_zip_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise', '-gc=35,129']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_multi_city_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4','-sunrise', '-city=London', '-z=94040,us']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+
 
     # Check if the -help command is functioning
     def test_help_command(self):
@@ -218,11 +237,6 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         commands = ['openweather.py', '-sunrise', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise']
 
         self.assertRaisesRegex(Exception, "Multiple -sunrise commands are specified.", check_command_args, commands)
-
-    # check if user enter api key
-    def test_api_command(self): #B
-        commands = ['openweather.py', '-city=London']
-        self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 
     # Check whether one input is valid
     def test_check_input_check_with_one_input(self): #B
