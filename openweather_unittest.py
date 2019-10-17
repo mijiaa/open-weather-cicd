@@ -22,6 +22,10 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         commands = ['openweather.py', '-city=London']
         self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 
+    def test_dup_api_command(self):
+        commands = ['openweather.py', '-city=London','-api=170dae04cac7827d30fd3679c496ffb4','-api=170dae04cac7827d30fd3679c496ffb4']
+        self.assertRaisesRegex(Exception, "Multiple chosen API keys given are specified.", check_command_args, commands)
+
     # check if user enter an input for commands that allow input
     def test_inputs_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
@@ -69,9 +73,22 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_command(self):
+    def test_dup_multi_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_dup_multi_cid_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797','-sunrise', '-cid=2172797']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_dup_multi_zip_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise', '-gc=35,129']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_dup_multi_zip_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise', '-city=London']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
 
     # Check if the -time command is functioning
     def test_time_command(self):
