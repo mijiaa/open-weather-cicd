@@ -232,7 +232,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Multiple -sunrise commands are specified.", check_command_args, commands)
 
     # check if user enter api key
-    def test_api_command(self): #B
+    def test_api_command(self): #mcdc
         commands = ['openweather.py', '-city=London']
         self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 
@@ -288,33 +288,25 @@ class DisplayingMessageTestCases(unittest.TestCase):
     # MCDC
 
     # Test if the city's concatenation of the base url, API key and the user's input for the city command is correct
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_city_json(self, mock_get):
-        output_str = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9."
-        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -city command.")
+
+    def test_get_city_json(self):
+        output_result = displaying_message(False, [True, False, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
+        self.assertEqual(output_result[1].status_code, 200, "There is a problem getting the JSON using the -city command.")
 
     # Test if the cid's concatenation of the base url, API key and the user's input for the cid command is correct
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_cid_json(self, mock_get):
-        output_str = displaying_message(False, [False, True, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '2172797'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9."
-        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
+    def test_get_cid_json(self):
+        output_result = displaying_message(False, [False, True, False, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '2172797'])
+        self.assertEqual(output_result[1].status_code, 200, "There is a problem getting the JSON using the -cid command.")
 
     # Test if the gc's concatenation of the base url, API key and the user's input for the gc command is correct
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_gc_json(self, mock_get):
-        output_str = displaying_message(False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '35,139'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 15:7:15."
-
-        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -gc command.")
+    def test_get_gc_json(self):
+        output_result = displaying_message(False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '35,139'])
+        self.assertEqual(output_result[1].status_code, 200, "There is a problem getting the JSON using the -gc command.")
 
     # Test if the z's concatenation of the base url, API key and the user's input for the z command is correct
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_get_z_json(self, mock_get):
-        output_str = displaying_message(False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040,us'])
-        actual_output_str = "Time of weather shown is on 2019-10-16 15:9:15."
-        self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
+    def test_get_z_json(self):
+        output_result = displaying_message(False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040,us'])
+        self.assertEqual(output_result[1].status_code, 200, "There is a problem getting the JSON using the -cid command.")
 
     # Test whether the user didn't enter any location commands
     def test_no_location_commands_given(self):

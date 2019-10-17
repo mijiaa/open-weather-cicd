@@ -252,6 +252,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         humidity_percent = json_result['clouds']['all']
         result_str += "It is likely to be " + str(description) + " with a humidity of " + str(humidity_percent) + "%."
     if wind:
+        # if len(json_result['wind']) == 1:
         wind_speed = json_result['wind']['speed']
         wind_angle = json_result['wind']['deg']
         result_str += "A wind speed of " + str(wind_speed) + "m/s from " + str(wind_angle) + " degrees."
@@ -265,7 +266,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     # To output the message to user
     print(result_str)
     # To return the string for testing
-    return result_str
+    return result_str, response
 
 
 # To get the date and time for the -time command
