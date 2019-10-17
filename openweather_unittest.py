@@ -232,7 +232,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Multiple -sunrise commands are specified.", check_command_args, commands)
 
     # check if user enter api key
-    def test_api_command(self): #mcdc
+    def test_no_api_command(self): #mcdc
         commands = ['openweather.py', '-city=London']
         self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 

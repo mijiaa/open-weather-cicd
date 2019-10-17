@@ -159,7 +159,6 @@ def check_command_args(command_arg):
                 sunrise = True
                 check_data_inputs = True
 
-
     #  Check if user have -api
     if api is False and help is False:
         raise Exception("API key is was not inputted. You may add it with the -api command")
