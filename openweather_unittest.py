@@ -219,7 +219,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
 
     # Check if the checking of multiple -humidity is functioning
     def test_invalid_help_command(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time', '-help']
+        commands = ['openweather.py', '-help', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
 
         self.assertRaisesRegex(Exception, "-help command can only be called alone. ", check_command_args, commands)
 
