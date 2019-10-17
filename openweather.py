@@ -117,6 +117,7 @@ def check_command_args(command_arg):
                 # Check if user wanted celsius
                 elif data == 'celsius':
                     temp_data = True
+                # User never specify any unit of temperature
                 elif data is None:
                     temp_data = True
                 # User misspelled the unit or gave the wrong unit
