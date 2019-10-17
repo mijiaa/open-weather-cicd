@@ -5,37 +5,33 @@ from unittest import mock
 
 # Test class to test the check_command_args
 class CheckCommandArgsTestCases(unittest.TestCase):
-    def test_no_commands(self):
-        commands = []
+    def test_no_commands(self): # B
+        commands = ['openweather.py']
         self.assertRaisesRegex(Exception,  "Enter in some commands to get data from a location or use the -help "
                                            "command.", check_command_args, commands)
 
     # check if user enter an input for commands that do not allow input
-    def test_no_inputs_command(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunset=time' ]
+    def test_no_inputs_command(self): # MCDC
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunset=time']
         self.assertRaisesRegex(Exception,
                                "Only the commands -api, -city, -cid, -gc, -z and -temp allows inputs.",
                                check_command_args, commands)
 
-    # check if user enter api key
-    def test_api_command(self):
-        commands = ['openweather.py', '-city=London']
-        self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
-
     # check if user enter an input for commands that allow input
-    def test_inputs_command(self):
+    def test_inputs_command(self):# MCDC
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city']
         self.assertRaisesRegex(Exception,
                                "Please enter an input using a '=' after the command.\nEg. -city=London",
                                check_command_args, commands)
 
     # check if user entered any invalid commands
-    def test_invalid_inputs_command(self):
+    def test_invalid_inputs_command(self): # B
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-what']
         self.assertRaisesRegex(Exception,
                                "Commands aren't spelled correctly.",
                                check_command_args, commands)
 
+    # MCDC
     # check if command -city is working
     def test_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London','-sunrise']
@@ -72,6 +68,20 @@ class CheckCommandArgsTestCases(unittest.TestCase):
     def test_dup_multi_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    # Check if the -help command is functioning
+    def test_help_command(self):
+        commands = ['openweather.py', '-help']
+        result = check_command_args(commands)
+
+        actual_result = [True, [False, False, False, False], [False, False, True, False, False, False, False, False, False], [None, None]]
+        self.assertEqual(result, actual_result, "The checking of the -help is wrong.")
+
+    # Check if the checking of multiple -humidity is functioning
+    def test_invalid_help_command(self):
+        commands = ['openweather.py', '-help', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
+
+        self.assertRaisesRegex(Exception, "-help command can only be called alone. ", check_command_args, commands)
 
     # Check if the -time command is functioning
     def test_time_command(self):
@@ -209,22 +219,13 @@ class CheckCommandArgsTestCases(unittest.TestCase):
 
         self.assertRaisesRegex(Exception, "Multiple -sunrise commands are specified.", check_command_args, commands)
 
-    # Check if the -help command is functioning
-    def test_help_command(self):
-        commands = ['openweather.py', '-help']
-        result = check_command_args(commands)
-
-        actual_result = [True, [False, False, False, False], [False, False, True, False, False, False, False, False, False], [None, None]]
-        self.assertEqual(result, actual_result, "The checking of the -help is wrong.")
-
-    # Check if the checking of multiple -humidity is functioning
-    def test_invalid_help_command(self):
-        commands = ['openweather.py', '-help', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
-
-        self.assertRaisesRegex(Exception, "-help command can only be called alone. ", check_command_args, commands)
+    # check if user enter api key
+    def test_api_command(self): #B
+        commands = ['openweather.py', '-city=London']
+        self.assertRaisesRegex(Exception, "API key is was not inputted. You may add it with the -api command", check_command_args, commands)
 
     # Check whether one input is valid
-    def test_check_input_check_with_one_input(self):
+    def test_check_input_check_with_one_input(self): #B
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-time']
         result = check_command_args(commands)
 
@@ -232,7 +233,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertEqual(result, actual_result, "The checking of the data commands is wrong.")
 
     # Check whether multiple input is valid
-    def test_check_input_check_with_more_than_one_input(self):
+    def test_check_input_check_with_more_than_one_input(self):  #B
         commands = ['openweather.py', '-pressure', '-api=170dae04cac7827d30fd3679c496ffb4', '-sunset', '-city=London', '-time']
         result = check_command_args(commands)
 
@@ -241,7 +242,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertEqual(result, actual_result, "The checking of the data commands is wrong.")
 
     # Check whether no data commands is valid
-    def test_check_input_check_with_no_input(self):
+    def test_check_input_check_with_no_input(self):  #B
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London']
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
 
@@ -272,6 +273,8 @@ class DisplayingMessageTestCases(unittest.TestCase):
 
         return MockResponse(None, 404)
 
+    # MCDC
+
     # Test if the city's concatenation of the base url, API key and the user's input for the city command is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_get_city_json(self, mock_get):
@@ -301,6 +304,11 @@ class DisplayingMessageTestCases(unittest.TestCase):
         actual_output_str = "Time of weather shown is on 2019-10-16 15:9:15."
         self.assertEqual(output_str, actual_output_str, "There is a problem getting the JSON using the -cid command.")
 
+    # Test whether the user didn't enter any location commands
+    def test_no_location_commands_given(self):
+        arg = False, [False, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', None]
+        self.assertRaisesRegex(Exception, "Please enter a location command.", displaying_message, arg[0], arg[1], arg[2], arg[3])
+
     # Test whether user input is the wrong format for the gc command
     def test_correct_input_format_gc(self):
         arg = False, [False, False, False, True], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '39&139']
@@ -311,16 +319,13 @@ class DisplayingMessageTestCases(unittest.TestCase):
         arg = False, [False, False, True, False], [True, False, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', '94040']
         self.assertRaisesRegex(Exception, "When entering the zip code and the country code for this command, separate them with a ','", displaying_message, arg[0], arg[1], arg[2], arg[3])
 
+    # BRANCH
+
     # Test if the user has enter a non existent city name
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_invalid_user_input(self, mock_get):
         arg = False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'test']
         self.assertRaisesRegex(Exception, "Entered in wrong inputs given to the commands.", displaying_message, arg[0], arg[1], arg[2], arg[3])
-
-    # Test whether the user didn't enter any location commands
-    def test_no_location_commands_given(self):
-        arg = False, [False, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', None]
-        self.assertRaisesRegex(Exception, "Please enter a location command.", displaying_message, arg[0], arg[1], arg[2], arg[3])
 
     # test if Json data process for temp=fahrenheit output is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)

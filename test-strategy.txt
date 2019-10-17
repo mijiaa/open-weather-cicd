@@ -13,3 +13,4 @@ data command, one data command and zero commands
 The way we are going to implement MC/DC on the first function:
 1) to consider the command's check. This will apply to all the checks from line 16 and 18
 2) to consider the check_loc. This will apply to all the location command checks at line 17
+3) to consider the location's check.
