@@ -2,11 +2,6 @@ import sys
 import time
 import requests
 
-# To get the arguments the user entered in
-command_arg = sys.argv
-
-# python openweather.py -api=170dae04cac7827d30fd3679c496ffb4
-
 
 def check_command_args(command_arg):
     # Listing out all the possible command-line commands
@@ -52,7 +47,6 @@ def check_command_args(command_arg):
         # Check if the command exist in the list of commands
         if command not in command_list:
             raise Exception("Commands aren't spelled correctly.")
-
         elif command == "-api":
             # Check if -api was called before
             if api:
@@ -214,7 +208,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
         raise Exception("Please enter a location command.")
 
     response = requests.get(complete_url)
-
+    # When the user gave the incorrect API key or location information
     if response.status_code == 404:
         raise Exception("Entered in wrong inputs given to the commands.")
     # To get the JSON data
@@ -299,7 +293,8 @@ def get_time_string(seconds):
 
     return time_string
 
-
 # To execute the program
 if __name__ == "__main__":
-    print(check_command_args(command_arg))
+    # To get the arguments the user entered in
+    command_arg = sys.argv
+    check_command_args(command_arg)
