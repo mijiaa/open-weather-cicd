@@ -39,7 +39,6 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertRaisesRegex(Exception,
                                "Commands aren't spelled correctly.",
                                check_command_args, commands)
-
     # MCDC
     # check if command -city is working
     def test_city_command(self):
