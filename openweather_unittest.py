@@ -73,20 +73,24 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_city_command(self):
+    def test_dup_city_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-city=London', '-sunrise', '-city=London']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_cid_command(self):
+    def test_dup__cid_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-cid=2172797','-sunrise', '-cid=2172797']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_zip_command(self):
+    def test_multi_zip_command(self):
         commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise', '-gc=35,129']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
-    def test_dup_multi_zip_command(self):
-        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4', '-z=94040,us','-sunrise', '-city=London']
+    def test_multi_city_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4','-sunrise', '-city=London', '-z=94040,us']
+        self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
+
+    def test_multi_gc_command(self):
+        commands = ['openweather.py', '-api=170dae04cac7827d30fd3679c496ffb4','-gc=35,129', '-z=94040,us','-sunrise']
         self.assertRaisesRegex(Exception,  "Multiple chosen locations are specified.", check_command_args, commands)
 
 
