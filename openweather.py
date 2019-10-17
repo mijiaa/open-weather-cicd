@@ -158,6 +158,8 @@ def check_command_args(command_arg):
             else:
                 sunrise = True
                 check_data_inputs = True
+        else:
+            continue
 
 
     #  Check if user have -api
