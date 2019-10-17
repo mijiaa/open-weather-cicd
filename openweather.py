@@ -186,6 +186,7 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
 
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
+    # To create the query url with the appropriate query and data
     if location_check_lst[0]:
         city_name = loc_data
         complete_url = base_url + "appid=" + api_key + "&q=" + city_name
@@ -208,19 +209,20 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
             raise Exception("When entering the latitude and longitude coordinates for this command, separate them with a ','")
     else:
         # If the user never mentioned any location commands
-        raise Exception("Please enter a location command")
+        raise Exception("Please enter a location command.")
 
     response = requests.get(complete_url)
 
     if response.status_code == 404:
         raise Exception("Entered in wrong inputs given to the commands.")
+    # To get the JSON data
     json_result = response.json()
-
-    # print(json_result)
 
     [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise] = data_check_lst
 
+    # To hold the message to output to user
     result_str = ''
+    # To go through the JSON and extract the data that is needed
     if time:
         time_string = get_date_and_time_string(json_result['dt'])
         result_str += "Time of weather shown is " + time_string
@@ -257,10 +259,14 @@ def displaying_message(help, location_check_lst, data_check_lst, user_inputs):
     if sunrise:
         time_string = get_time_string(json_result['sys']['sunrise'])
         result_str += "The sun rises at " + time_string
+
+    # To output the message to user
     print(result_str)
+    # To return the string for testing
     return result_str
 
 
+# To get the date and time for the -time command
 def get_date_and_time_string(seconds):
     result = time.gmtime(seconds)
     time_string = "on "
@@ -277,6 +283,7 @@ def get_date_and_time_string(seconds):
     return time_string
 
 
+# To get the time for the -sunset and -sunrise command
 def get_time_string(seconds):
     result = time.gmtime(seconds)
     time_string = ""

@@ -3,6 +3,7 @@ import unittest
 from unittest import mock
 
 
+# Test class to test the check_command_args
 class CheckCommandArgsTestCases(unittest.TestCase):
     def test_no_commands(self):
         commands = []
@@ -245,6 +246,7 @@ class CheckCommandArgsTestCases(unittest.TestCase):
         self.assertRaisesRegex(Exception, "Enter in some data commands or call the -help command.", check_command_args, commands)
 
 
+# Test class to test the display_message function
 class DisplayingMessageTestCases(unittest.TestCase):
     def mocked_requests_get(*args, **kwargs):
         class MockResponse:
@@ -255,12 +257,16 @@ class DisplayingMessageTestCases(unittest.TestCase):
             def json(self):
                 return self.json_data
 
+        # To be by most of the test cases
         if args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&q=London':
             return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+        # To be used when checking for the -cid command
         elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&id=2172797':
             return MockResponse({'coord': {'lon': -0.13, 'lat': 51.51}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 287.13, 'pressure': 1001, 'humidity': 87, 'temp_min': 284.82, 'temp_max': 290.37}, 'visibility': 10000, 'wind': {'speed': 6.7, 'deg': 280}, 'rain': {}, 'clouds': {'all': 75}, 'dt': 1571218509, 'sys': {'type': 1, 'id': 1502, 'country': 'GB', 'sunrise': 1571207117, 'sunset': 1571245602}, 'timezone': 3600, 'id': 2643743, 'name': 'London', 'cod': 200}, 200)
+        # To be used when checking for the -gc command
         elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&lat=35&lon=139':
-            return MockResponse({'coord': {'lon': 139, 'lat': 35}, 'weather': [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 'base': 'stations', 'main': {'temp': 289.11, 'pressure': 1023, 'humidity': 89, 'temp_min': 288.15, 'temp_max': 289.82}, 'wind': {'speed': 0.89, 'deg': 22, 'gust': 0.45}, 'clouds': {'all': 100}, 'dt': 1571238435, 'sys': {'type': 3, 'id': 2003105, 'country': 'JP', 'sunrise': 1571259042, 'sunset': 1571299679}, 'timezone': 32400, 'id': 1851632, 'name': 'Shuzenji', 'cod': 200}, 200)
+            return MockResponse({'coord': {'lo  n': 139, 'lat': 35}, 'weather': [{'id': 804, 'main': 'Clouds', 'description': 'overcast clouds', 'icon': '04n'}], 'base': 'stations', 'main': {'temp': 289.11, 'pressure': 1023, 'humidity': 89, 'temp_min': 288.15, 'temp_max': 289.82}, 'wind': {'speed': 0.89, 'deg': 22, 'gust': 0.45}, 'clouds': {'all': 100}, 'dt': 1571238435, 'sys': {'type': 3, 'id': 2003105, 'country': 'JP', 'sunrise': 1571259042, 'sunset': 1571299679}, 'timezone': 32400, 'id': 1851632, 'name': 'Shuzenji', 'cod': 200}, 200)
+        # To be used when checking for the -z command
         elif args[0] == 'http://api.openweathermap.org/data/2.5/weather?appid=170dae04cac7827d30fd3679c496ffb4&zip=94040,us':
             return MockResponse({'coord': {'lon': -122.09, 'lat': 37.39}, 'weather': [{'id': 803, 'main': 'Clouds', 'description': 'broken clouds', 'icon': '04d'}], 'base': 'stations', 'main': {'temp': 282.92, 'pressure': 1017, 'humidity': 87, 'temp_min': 279.82, 'temp_max': 287.59}, 'visibility': 16093, 'wind': {'speed': 1.984, 'deg': 310}, 'clouds': {'all': 75}, 'dt': 1571238555, 'sys': {'type': 1, 'id': 5310, 'country': 'US', 'sunrise': 1571235420, 'sunset': 1571275831}, 'timezone': -25200, 'id': 0, 'name': 'Mountain View', 'cod': 200}, 200)
 
@@ -311,11 +317,15 @@ class DisplayingMessageTestCases(unittest.TestCase):
         arg = False, [True, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'test']
         self.assertRaisesRegex(Exception, "Entered in wrong inputs given to the commands.", displaying_message, arg[0], arg[1], arg[2], arg[3])
 
+    # Test whether the user didn't enter any location commands
+    def test_no_location_commands_given(self):
+        arg = False, [False, False, False, False], [False, True, True, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', None]
+        self.assertRaisesRegex(Exception, "Please enter a location command.", displaying_message, arg[0], arg[1], arg[2], arg[3])
+
     # test if Json data process for temp=fahrenheit output is correct
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_temp_fahrenheit(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [False, True, False, False, False, False, False, False, False], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        # print(output_str)
         actual_output_str = "The temperature ranges from 33.88 to 33.91 fahrenheit."
         self.assertEqual(output_str, actual_output_str, "JSON data handling for fahrenheit has error")
 
@@ -330,7 +340,6 @@ class DisplayingMessageTestCases(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_fetch(self, mock_get):
         output_str = displaying_message(False, [True, False, False, False], [True, False, True, True, True, True, True, True, True], ['170dae04cac7827d30fd3679c496ffb4', 'London'])
-        # print(output_str)
         actual_output_str = "Time of weather shown is on 2019-10-16 9:35:9." \
                             "The atmospheric pressure is 1001hPa.It is likely to be broken clouds with a cloudiness of 75%." \
                             "It is likely to be broken clouds with a humidity of 75%." \
