@@ -159,11 +159,13 @@ def check_command_args(command_arg):
                 sunrise = True
                 check_data_inputs = True
 
+
     #  Check if user have -api
     if api is False and help is False:
         raise Exception("API key is was not inputted. You may add it with the -api command")
     # Check whether the user entered any data to display
     elif check_data_inputs:
+        # To put the checks into array for easier segregation
         location_check_lst = [city, cid, zip, geo]
         data_check_lst = [time, temp, temp_data, pressure, cloud, humidity, wind, sunset, sunrise]
         user_inputs = [api_data, loc_data]
