@@ -28,6 +28,7 @@ python openweather.py -api=XXX -city="London" -temp="celsius"
 3)Please note that there should not be any spaces between command-line arguments and data input.
 example :
 -city="London" (correct)
+-city=London (correct)
 -city = "London" (incorrect)
 
 4)Please also take note that there is only one dash for command-line arguments
@@ -48,3 +49,10 @@ example:
 python openweather.py -help (correct)
 python openweather.py -help -api=XXX -city="London" (incorrect)
 FIT2107 project repository
+
+7) "-wind" command can give either only the wind speed or the wind speed plus the angle of the wind depending on weather
+the forecast gave the information
+
+8) -city, -cid, -gc, -z are called location commands in our program.information
+
+9) -time, -temp, -pressure, -cloud, -humidity, -wind, -sunset, -sunrise are called data commands in our program
