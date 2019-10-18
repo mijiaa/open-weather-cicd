@@ -293,8 +293,9 @@ def get_time_string(seconds):
 
     return time_string
 
+# To get the arguments the user entered in
+command_arg = sys.argv
+
 # To execute the program
 if __name__ == "__main__":
-    # To get the arguments the user entered in
-    command_arg = sys.argv
     check_command_args(command_arg)

@@ -23,7 +23,6 @@ The test cases that implemented branch coverage are:
     6) To test when user does not enter data commands
         - test_check_input_check_with_no_input
 
-
 The test cases that implemented modified condition/ decision coverage are:
     1) When considering the api check in the program:
         a. test_time_command  (returns True)
@@ -76,7 +75,6 @@ The test cases that implemented modified condition/ decision coverage are:
             i. test_zip_command (returns True)
             ii.test_multi_zip_command (return False)
 
-
 For the first 9 scenarios, the test cases in ‘a.’ happens when only one of the commands  in
 [-time, -temp, -pressure, -cloud, -humidity, -wind, -sunset,  -sunrise] is specified because the “command” variable will
 only enter the branch check of that specified command once.
@@ -105,7 +103,7 @@ location command argument are specified because the “check_loc” variable ent
 location command. The “check_loc” was already set to True when the first location command was specified and enter its
 own branch check.
 
--------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 For DisplayingMessageTestCases test suite class, we implemented the same strategy as CheckCommandArgsTestCases test suite
 which is a combination of branch coverage and MC/DC coverage.
